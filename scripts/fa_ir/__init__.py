@@ -49,26 +49,26 @@ from . import l
 #                 len=len
 #             )
 #         )
-def custom_qr_table_writer(sec: b.SecSpec, table: List[List[str]], template: Template,
-                           path: str, mode: str = "w", title: str = "QR Codes"):
-    with open(path, mode=mode) as f:
-        f.write(
-            template.render(
-                title=title,
-                table=[
-                    table,
-                    [
-                        b.data_extractor(
-                            sec,
-                            osp.join(sec.src_path, p + ".md")
-                        ).get("header")
-                        for p in table[0]
-                    ]
-                ],
-                enumerate=enumerate,
-                len=len
-            )
-        )
+# def custom_qr_table_writer(sec: b.SecSpec, table: List[List[str]], template: Template,
+#                            path: str, mode: str = "w", title: str = "QR Codes"):
+#     with open(path, mode=mode) as f:
+#         f.write(
+#             template.render(
+#                 title=title,
+#                 table=[
+#                     table,
+#                     [
+#                         b.data_extractor(
+#                             sec,
+#                             osp.join(sec.src_path, p + ".md")
+#                         ).get("header")
+#                         for p in table[0]
+#                     ]
+#                 ],
+#                 enumerate=enumerate,
+#                 len=len
+#             )
+#         )
 
 
 # Reverse

@@ -25,19 +25,18 @@
     <th><b class="table-pseudo-heading">جایزه‌ها</b></th>
     <th><b class="table-pseudo-heading">برچسب‌ها</b></th>
   </tr>
-  {%-  for scientist in index %}
+  {%-  for r in index %}
   <tr>
-    <td><a href="{{scientist.link}}">{{scientist.filename}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.scientist_title}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.name}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.born}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.died}}</a></td>
-    <td><a href="{{scientist.link}}">{{"مرد" if scientist.table.gender else "زن"}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.nationality}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.alma_mater}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.known_for}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.awards}}</a></td>
-    <td><a href="{{scientist.link}}">{{scientist.table.tags}}</a></td>
+    <td><a href="{{r.link}}">{{r.filename}}</a></td>
+    <td><a href="{{r.link}}">{{r.title}}</a></td>
+    <td><a href="{{r.link}}">{{r.name}}</a></td>
+    <td><a href="{{r.link}}">{{r.born}}</a></td>
+    <td><a href="{{r.link}}">{{r.died}}</a></td>
+    <td><a href="{{r.link}}">{{r.nationality}}</a></td>
+    <td><a href="{{r.link}}">{{r.alma_mater}}</a></td>
+    <td><a href="{{r.link}}">{{r.known_for}}</a></td>
+    <td><a href="{{r.link}}">{{r.awards}}</a></td>
+    <td><a href="{{r.link}}">{{r.tags}}</a></td>
   </tr>
   {%- endfor %}
 </table>
