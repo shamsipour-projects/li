@@ -27,16 +27,16 @@
   </tr>
   {%-  for r in index %}
   <tr>
-    <td><a href="{{r.link}}">{{r.filename}}</a></td>
-    <td><a href="{{r.link}}">{{r.title}}</a></td>
-    <td><a href="{{r.link}}">{{r.name}}</a></td>
-    <td><a href="{{r.link}}">{{r.born}}</a></td>
-    <td><a href="{{r.link}}">{{r.died}}</a></td>
-    <td><a href="{{r.link}}">{{r.nationality}}</a></td>
-    <td><a href="{{r.link}}">{{r.alma_mater}}</a></td>
-    <td><a href="{{r.link}}">{{r.known_for}}</a></td>
-    <td><a href="{{r.link}}">{{r.awards}}</a></td>
-    <td><a href="{{r.link}}">{{r.tags}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("filename")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("title")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("name")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("born")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("died")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("nationality")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("alma_mater")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("known_for")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("awards")}}</a></td>
+    <td><a href="{{r.get("link")}}">{{r.get("tags")}}</a></td>
   </tr>
   {%- endfor %}
 </table>
