@@ -13,4 +13,4 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
-PREFIX = "https://shamsipoor-projects.github.io/li/"  # Lab, IoT
+PREFIX = "https://shamsipour-projects.github.io/li/"  # Lab, IoT
