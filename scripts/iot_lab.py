@@ -1,0 +1,57 @@
+# Copyright 2023 MohammadMohsen Akbarpoor Darabi (M. MAD)
+
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your
+# option) any later version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+import blogger as b
+import global_values as gv
+import fa_ir
+
+
+document_root = b.SecSpec(
+    name="root",
+    dst_path="docs",
+    url_prefix=gv.PREFIX,
+    src_path="original_content",
+    sub_secs=[fa_ir.root],
+    generate_index=False,
+    generate_qr=False,
+    generate_qrpages=False,
+    rules=b.Rules(
+        # nuke_dst_path=True,  # It did pass the test and we don't need it anymore
+        recursive_convert=False,
+        copy_selected_data=True,
+        recursive_copy=False,
+        overwrite_when_copying=True,
+    )
+)
+
+
+def main():
+    b.generator(
+        document_root,
+
+        # For normal qr pages
+        qr_pages_rows=5,
+        qr_pages_cols=4,
+
+        # For triangle qr pages
+        #qr_pages_rows=1,
+        #qr_pages_cols=4,
+
+        verbose=True
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fa-IR">
+<head>
+<title>{{title}}</title>
+<meta charset="UTF-8">
+<meta name="author" content="M. MAD">
+<link rel="icon" type="image/png" href="../../favicon.png">
+<link rel="stylesheet" href="../scientists_style.css">
+<link rel="stylesheet" href="../fonts.css">
+</head>
+<body dir="rtl" align="right">
+<h1 class="scientist-heading scientist-text-heading">{{header}}</h1>
+<div class="scientist-pic-div scientist-heading">
+<img class="scientist-pic" src="{{pic}}">
+</div>
+<table>
+  <tr>
+    <td><b class="table-pseudo-heading">نام:</b><br>{{name}}</td>
+    <td><b class="table-pseudo-heading">زاده:</b><br>{{born}}</td>
+  </tr>
+  <tr>
+    <td><b class="table-pseudo-heading">درگذشت:</b><br>{{died}}</td>
+    <td><b class="table-pseudo-heading">جنسیت:</b><br>{{"مرد" if gender else "زن"}}</td>
+  </tr>
+  <tr>
+    <td><b class="table-pseudo-heading">ملیت:</b><br>{{nationality}}</td>
+    <td><b class="table-pseudo-heading">محل تحصیل:</b><br>{{alma_mater}}</td>
+  </tr>
+  <tr>
+    <td><b class="table-pseudo-heading">شناخته‌شده برای:</b><br>{{known_for}}</td>
+    <td><b class="table-pseudo-heading">جایزه‌ها:</b><br>{{awards}}</td>
+  </tr>
+  <tr>
+    <td colspan="2"><b class="table-pseudo-heading">برچسب‌ها:</b><br>{{tags}}</td>
+  </tr>
+</table>
+<div class="fa-IR-explanation">
+<h3 class="fa-IR-explanation-header">اهداف آزمایش</h3>
+<ul>
+  {% for goal in goals %}
+    <li>{{goal}}</li>
+  {% endfor %}
+</ul>
+<h3 class="fa-IR-explanation-header">پیش‌نیازها</h3>
+{{_content}}
+<h3 class="fa-IR-explanation-header">اقلام مورد نیاز</h3>
+<ul>
+  {% for ingredient in ingredients %}
+    <li>{{ingredient}}</li>
+  {% endfor %}
+</ul>
+<h3 class="fa-IR-explanation-header">مراحل آزمایش</h3>
+<p>
+مراحل این آزمایش در ادامه آمده‌اند.
+</p>
+<h4 class="fa-IR-explanation-header">شبیه‌سازی مدار در نرم‌افزار <span class="english-text">Proteus</span> (اختیاری)</h4>
+<p>
+برای شبیه‌سازی مدار در نرم‌افزار
+<span class="english-text">Proteus</span>،
+بر پایه مطالب گفته‌شده در بخش «نرم‌افزار
+<span class="english-text">Proteus</span>»
+پیوست ۳ عمل کنید.
+</p>
+<h4 class="fa-IR-explanation-header">پیاده‌سازی عملی مدار</h4>
+<p>
+پیاده‌سازی عملی مدار خود دربردارنده دو زیربخش است که در ادامه توضیح داده می‌شوند.
+</p>
+<h5 class="fa-IR-explanation-header">ترجمه و بارگذاری کد آزمایش بر روی برد توسعه آردوینو</h5>
+<p>
+برای ترجمه و بارگذاری کد آزمایش، مانند آزمایش ۰ عمل کنید.
+</p>
+<h5 class="fa-IR-explanation-header">بستن مدار</h5>
+<p>
+برای بستن مدار، بر پایه مطالب گفته‌شده در زیربخش «توضیح سیم‌بندی و بستن مدار آزمایش» در بخش «پیش‌نیازها» عمل کنید.
+</p>
+<p>
+
+</p>
+
+</div>
+</body>
+</html>

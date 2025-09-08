@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fa-IR">
+<head>
+<title>{{title}}</title>
+<meta charset="UTF-8">
+<meta name="author" content="M. MAD">
+<link rel="icon" type="image/png" href="../../../../favicon.png">
+<link rel="stylesheet" href="../../../qr_pages_scientists_triangle_style.css">
+<link rel="stylesheet" href="../../../fonts.css">
+</head>
+<body>
+<div class="page-container">
+<div> {# This is here just to make outer borders of table visible #}
+<table>
+  <tr><td></td><td></td><td></td><td></td></tr>
+  <tr>
+    {%- for i, qr_code in enumerate(table[0][0]) %}
+    <td>
+      <div class="img-container">
+        <img class="qr-code-img" src="../{{qr_code}}.png">
+      </div>
+      <div class="qr-code-title" dir="auto">
+        {% set qr_title = table[1][i] %}
+        {% set has_span = '<span class="persian-heading">' in qr_title %}
+        {% set qr_title = qr_title.replace('<span class="persian-heading">', "").replace("</span>", "") %}
+        {% set qr_title = qr_title[:28] if len(qr_title) < 31 else qr_title[:25] + "…" %}
+        {{ qr_title if not has_span else '<span class="persian-heading">' + qr_title + "</span>" }}
+      </div>
+    </td>
+    {%- endfor %}
+  </tr>
+  <tr><td></td><td></td><td></td><td></td></tr>
+</table>
+</div>
+<p dir="rtl" align="right" class="work-of">
+کاری از:
+<b>
+محمدمحسن اکبرپور درابی
+</b>
+</p>
+</div>
+</body>
+</html>

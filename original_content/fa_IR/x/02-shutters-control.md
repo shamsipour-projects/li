@@ -1,0 +1,345 @@
+---
+title: "Experiment 02: Shutters control"
+header: "Experiment 02: Shutters control"
+author: M. MAD
+pic: img/p/07-displays.png
+name: "آزمایش 02: پیاده‌سازی کرکره برقی"
+manufacturing_date: 2025
+category: آزمایش
+manufacturer_name: اپتیک‌نیرو - <span class="english-text">Optic Niroo</span>
+manufacturer_country: ایران
+goals:
+  - >
+    خوانش ورودی‌های آنالوگ و دیجیتال از
+    <span class="english-text">Joystick</span>
+    و تفسیر آنها به عنوان ورودی‌های دیجیتال
+  - >
+    راه‌اندازی و ارسال فرامین و پالس‌های
+    <span class="english-text">PWM</span>
+    به درایور موتور
+    <span class="english-text">L298N</span>
+    (پل
+    <span class="english-text">H</span>)
+ingredients:
+  - یک دستگاه رایانه
+  - تابلوی آردوینو اونو (برای برد توسعه آردوینو اونو) یا تابلوی آردوینو مگا (برای برد توسعه آردوینو مگا)
+  - >
+    کابل تبدیل
+    <span class="english-text">USB Type-B</span>
+    (پورت
+    <span class="english-text">USB</span>
+    روی بردهای توسعه آردوینو) به
+    <span class="english-text">USB Type-A</span>
+    (پورت
+    <span class="english-text">USB</span>
+    مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+  - >
+    تابلوی حسگرهای دوم (برای
+    <span class="english-text">Joystick</span>)
+  - >
+    تابلوی حسگرهای سوم (برای موتور و درایور موتور
+    <span class="english-text">L298N</span>)
+---
+<p>
+کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
+این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
+</p>
+<h4>
+توضیح کد آزمایش
+</h4>
+<p>
+ماکروی DEBUG سطح گزارش‌گیری را مشخص می‌کند. وقتی DEBUG مساوی ۱ شود، ماکروی DEBUG_PIN روی پین شماره 12 تعریف می‌شود و بخش‌های داخل #if DEBUG فعال می‌گردند. قطعات داخل #if DEBUG برای چاپ در سریال و نشان‌گری LED کاربرد دارند و برای عیب‌یابی حرکت تیغه‌ها (شاتر) استفاده می‌شوند.
+</p>
+<div class="code">
+/* Copyright 2025 M. MAD */
+
+#define DEBUG 0
+#if DEBUG
+  // The `DEBUG_PIN` is active low due to the internal pullup
+  #define DEBUG_PIN 12
+#endif
+</div>
+<p>
+در کد زیر:
+•	سیگنال آنالوگ محور عمودی جوی‌استیک به A0 متصل است (JOYSTICK_Y).
+•	دکمه‌ی جوی‌استیک به پین دیجیتال 2 متصل است (JOYSTICK_BUTTON) و با INPUT_PULLUP خوانده می‌شود (فعال پایین — active-low).
+•	درایور موتور (مثلاً L298N) از پایه‌های کنترلی M1 و M2 (پین‌های دیجیتال 3 و 4) برای تعیین جهت استفاده می‌کند.
+•	ماکروی ENABLE_JUMPER نشان می‌دهد که آیا جامپر فعال‌سازی (ENA) روی ماژول L298N نصب است یا خیر. اگر جامپر نصب نشده باشد (ENABLE_JUMPER == 0) آنگاه ماکروی PWM1 تعریف می‌شود و کنترل سرعت از طریق PWM روی پین 5 انجام می‌پذیرد. در حالت پیش‌فرض (ENABLE_JUMPER == 1) کد از PWM استفاده نمی‌کند.
+</p>
+<div class="code">
+// Pin Definitions
+#define JOYSTICK_Y A0  // Joystick Y-axis analog input
+#define JOYSTICK_BUTTON 2  // Joystick button (digital input)
+#define M1 3  // L298N IN1 pin
+#define M2 4  // L298N IN2 pin
+
+#define ENABLE_JUMPER 1  // Set to `0` if L298N ENABLE jumper is not installed
+#if !ENABLE_JUMPER
+  #define PWM1 5  // L298N ENA pin (PWM)
+#endif
+</div>
+<p>
+در بخش زیر:
+•	مقدار FULL_TRAVEL_TIME برابر 10000 میلی‌ثانیه تعیین شده که زمان لازم برای حرکت کامل شاتر از بسته تا کاملاً باز (یا بالعکس) را نشان می‌دهد. کنترل موقعیت بر اساس زمان حرکت انجام می‌گیرد.
+•	مقادیر UP_THRESHOLD و DOWN_THRESHOLD مرزهای خوانش آنالوگ محور Y را تعیین می‌کنند: اگر مقدار آنالوگ کمتر از UP_THRESHOLD باشد جوی‌استیک به سمت باز (بالا)‌ تشخیص داده می‌شود، اگر مقدار بیشتر از DOWN_THRESHOLD باشد جوی‌استیک به سمت بسته (پایین) تشخیص داده می‌شود. این روش از تداخل مقادیر میانی (منطقه مرده) جلوگیری می‌کند.
+</p>
+<div class="code">
+// Configuration
+#define FULL_TRAVEL_TIME 10000 // Time for full open/close (10s)
+#define UP_THRESHOLD 400  // Joystick up threshold
+#define DOWN_THRESHOLD 600  // Joystick down threshold
+</div>
+<p>
+در کد زیر:
+•	تابع stopMotor() هر دو پایه کنترل جهت را در حالت LOW قرار می‌دهد و در صورت وجود پیـ‌دبلیـو‌ام (PWM1) مقدار PWM را صفر می‌کند تا موتور قطع شود.
+•	تابع moveUp() جهت موتور را به صورت M1=HIGH, M2=LOW قرار می‌دهد که جهت حرکتی مشخصی (باز شدن شاتر) را پیاده‌سازی می‌کند.
+•	تابع moveDown() جهت مخالف را تنظیم می‌کند (M1=LOW, M2=HIGH) که برای بسته شدن شاتر استفاده می‌شود.
+•	هر سه تابع توسط گارد #ifdef PWM1 با کنترل سرعت کامل (۲۵۵) در صورت نیاز ترکیب می‌شوند.
+</p>
+<div class="code">
+// Motor Control Functions
+void stopMotor() {
+  digitalWrite(M1, LOW);
+  digitalWrite(M2, LOW);
+  #ifdef PWM1
+    analogWrite(PWM1, 0);  // Ensure the motor got disabled
+  #endif
+}
+
+void moveUp() {
+  digitalWrite(M1, HIGH);
+  digitalWrite(M2, LOW);
+  #ifdef PWM1
+    analogWrite(PWM1, 255);  // Full speed
+  #endif
+}
+
+void moveDown() {
+  digitalWrite(M1, LOW);
+  digitalWrite(M2, HIGH);
+  #ifdef PWM1
+    analogWrite(PWM1, 255);  // Full speed
+  #endif
+}
+</div>
+<p>
+در کد زیر:
+•	شمارش وضعیت‌ها با enum State انجام شده: IDLE (ایست)، MOVING_UP (در حال بالا رفتن)، MOVING_DOWN (در حال پایین رفتن). مقدار اولیه currentState برابر IDLE قرار دارد.
+•	موقعیت جاری شاتر با currentPosition ذخیره می‌شود به صورت زمان (ms) از وضعیت تمام بسته (۰) تا FULL_TRAVEL_TIME برای کاملاً باز.
+•	movementStartTime و initialPosition برای محاسبه پیشروی حرکت استفاده می‌شوند: هنگام شروع یک حرکت، زمان آغاز و موقعیت اولیه ثبت می‌شود و سپس بر اساس زمان سپری‌شده موقعیت بروزرسانی می‌گردد.
+•	targetTime مقدار زمانی است که حرکت باید به طور خودکار متوقف شود (مثلاً وقتی به انتهای مسیر رسید).
+•	متغیرهای lastUp، lastDown و lastButtonState برای تشخیص لبه‌ی فشرده شدن (edge detection) ورودی‌ها و جلوگیری از چند بار تریگر شدن استفاده می‌شوند.
+</p>
+<div class="code">
+// System State
+enum State { IDLE, MOVING_UP, MOVING_DOWN };
+State currentState = IDLE;
+
+// Position Tracking
+unsigned long currentPosition = 0;  // Current shutter position (0=closed, FULL_TRAVEL_TIME=open)
+unsigned long movementStartTime = 0;  // Movement start timestamp
+unsigned long initialPosition = 0;  // Position at movement start
+unsigned long targetTime = 0;  // Scheduled stop time
+
+// Input Tracking
+bool lastUp = false;
+bool lastDown = false;
+bool lastButtonState = HIGH;
+</div>
+<p>
+در کد زیر:
+•  وضعیت دکمه جوی‌استیک به صورت INPUT_PULLUP تنظیم می‌شود تا با فشردن دکمه سطح LOW تولید گردد.
+•  پایه‌های M1 و M2 به عنوان خروجی تعریف شده‌اند. در صورت فعال بودن PWM1 آن پین نیز خروجی می‌شود.
+•  تابع stopMotor() برای اطمینان از توقف اولیه موتور فراخوانی می‌شود.
+•  اگر ماکروی DEBUG فعال باشد، پورت سریال راه‌اندازی و LED داخلی برای نشان‌گرهای دیباگ پیکربندی می‌گردد.
+</p>
+<div class="code">
+void setup() {
+  // Initialize pins
+  pinMode(JOYSTICK_BUTTON, INPUT_PULLUP);
+  pinMode(M1, OUTPUT);
+  pinMode(M2, OUTPUT);
+
+  #ifdef PWM1
+    pinMode(PWM1, OUTPUT);
+  #endif
+  
+  // Start with motor stopped
+  stopMotor();
+  
+  // Initialize serial for monitoring
+  #if DEBUG
+    // The `DEBUG_PIN` is active low due to the internal pullup
+    pinMode(LED_BUILTIN, OUTPUT);
+    Serial.begin(9600);
+  #endif
+}
+</div>
+<p>
+در کد زیر:
+•	خواندن وضعیت دکمه جوی‌استیک در متغیر buttonPressed به صورت active-low انجام می‌شود.
+•	خوانش آنالوگ محور Y در yValue قرار می‌گیرد و بر اساس آستانه‌ها دو بولین upPressed و downPressed ساخته می‌شود.
+•	متد تشخیص لبه (مثلاً upPressed && !lastUp) برای شروع حرکت فقط وقتی که کاربر تازه جوی‌استیک را به سمت بالا فشار داده به کار می‌رود.
+</p>
+<div class="code">
+void loop() {
+  // Read current inputs
+  bool buttonPressed = (digitalRead(JOYSTICK_BUTTON) == LOW);
+  int yValue = analogRead(JOYSTICK_Y);
+  bool upPressed = (yValue < UP_THRESHOLD);
+  bool downPressed = (yValue > DOWN_THRESHOLD);
+</div>
+<p>
+در کد زیر:
+•	شرط upPressed && !lastUp یعنی فقط در لبه‌ی فشردن (transition) جوی‌استیک به سمت بالا وارد این شاخه شو.
+•	اگر وضعیت فعلی IDLE و currentPosition کمتر از FULL_TRAVEL_TIME باشد، حرکت به سمت باز شدن شروع می‌شود: مقدار initialPosition به موقعیت فعلی تخصیص می‌یابد، زمان آغاز (movementStartTime) ذخیره می‌شود، و targetTime بر اساس مقدار باقی‌مانده برای رسیدن به حالت کاملاً باز تعیین می‌گردد. سپس currentState به MOVING_UP تغییر می‌کند و تابع moveUp() جهت موتور را تنظیم می‌کند.
+•	بخش‌های داخل #if DEBUG پیام‌های سریال برای عیب‌یابی ارسال می‌کنند.
+</p>
+<div class="code">
+// Handle joystick up edge
+if (upPressed && !lastUp) {
+  if (currentState == IDLE && currentPosition < FULL_TRAVEL_TIME) {
+    initialPosition = currentPosition;
+    movementStartTime = millis();
+    targetTime = movementStartTime + (FULL_TRAVEL_TIME – initialPosition);
+    currentState = MOVING_UP;
+    moveUp();
+
+    #if DEBUG
+      if (!digitalRead(DEBUG_PIN)) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println(“Starting UP movement”);
+        Serial.flush();
+        digitalWrite(LED_BUILTIN, LOW);
+      }
+    #endif
+  }
+}
+</div>
+<p>
+در کد زیر:
+•	منطق مشابه بخش قبل است اما برای بسته شدن شاتر.
+•	در این حالت targetTime برابر زمانِ لازم برای بازگشت به موقعیت صفر (بسته کامل) محاسبه می‌شود؛ یعنی اگر موقعیت فعلی ۳۰۰۰ ms باشد، حرکتِ پایین باید به اندازه ۳۰۰۰ ms ادامه یابد.
+</p>
+<div class="code">
+// Handle joystick down edge
+if (downPressed && !lastDown) {
+  if (currentState == IDLE && currentPosition > 0) {
+    initialPosition = currentPosition;
+    movementStartTime = millis();
+    targetTime = movementStartTime + initialPosition;
+    currentState = MOVING_DOWN;
+    moveDown();
+    #if DEBUG
+      if (!digitalRead(DEBUG_PIN)) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println(“Starting DOWN movement”);
+        Serial.flush();
+        digitalWrite(LED_BUILTIN, LOW);
+      }
+    #endif
+  }
+}
+</div>
+<p>
+در کد زیر:
+•  اگر دکمه جوی‌استیک فشرده شود و قبل از آن فشرده نبوده باشد (لبه‌ی پایین‌شدن دکمه)، و اگر مقرّ حرکت در وضعیت MOVING_UP یا MOVING_DOWN باشد، کد حرکت را متوقف و موقعیت را به‌روزرسانی می‌کند.
+•  محاسبه elapsed = millis() - movementStartTime نشان‌دهنده مدت‌زمان طی شده از شروع حرکت فعلی است.
+•  برای حالت MOVING_UP موقعیت جدید برابر initialPosition + elapsed است (محدود به FULL_TRAVEL_TIME با min)؛ برای حالت MOVING_DOWN موقعیت جدید برابر initialPosition - elapsed است، ولی اگر elapsed >= initialPosition مقدار صفر قرار داده می‌شود.
+•  پس از به‌روزرسانی موقعیت ماکرو stopMotor() اجرا و currentState به IDLE بازنشانی می‌شود. در حالت IDLE فشردن دکمه اثر دیگری ندارد.
+</p>
+<div class="code">
+// Handle button press (with edge detection)
+if (buttonPressed && !lastButtonState) {
+  if (currentState != IDLE) {
+    // Calculate elapsed movement time
+    unsigned long elapsed = millis() - movementStartTime;
+    
+    // Update position based on movement direction
+    if (currentState == MOVING_UP) {
+      currentPosition = min(initialPosition + elapsed, FULL_TRAVEL_TIME);
+      #if DEBUG
+        if (!digitalRead(DEBUG_PIN)) {
+          digitalWrite(LED_BUILTIN, HIGH);
+          Serial.print("Stopped UP. New position: ");
+          Serial.flush();
+          digitalWrite(LED_BUILTIN, LOW);
+        }
+      #endif
+    } else {
+      currentPosition = (elapsed < initialPosition) ? 
+                        (initialPosition - elapsed) : 0;
+      #if DEBUG
+        if (!digitalRead(DEBUG_PIN)) {
+          digitalWrite(LED_BUILTIN, HIGH);
+          Serial.print("Stopped DOWN. New position: ");
+          Serial.flush();
+          digitalWrite(LED_BUILTIN, LOW);
+        }
+      #endif
+    }
+    #if DEBUG
+      if (!digitalRead(DEBUG_PIN)) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println(currentPosition);
+        Serial.flush();
+        digitalWrite(LED_BUILTIN, LOW);
+      }
+    #endif
+    stopMotor();
+    currentState = IDLE;
+  }
+}
+</div>
+<p>
+در کد زیر:
+•  وقتی زمان فعلی (millis()) به یا از targetTime برابر یا بیشتر شود، سیستم تشخیص می‌دهد که حرکت به انتهای مسیر رسیده است. در آن صورت currentPosition به مقدار انتهایی (FULL_TRAVEL_TIME برای کاملاً باز یا 0 برای کاملاً بسته) تنظیم و موتور متوقف می‌شود.
+•  این مکانیزم اجازه می‌دهد که مسیر بر اساس زمان طی‌شده بدون سنسور مکان (مثلاً انکدر یا محدودکننده) مدیریت شود.
+</p>
+<div class="code">
+// Check for movement completion
+if (currentState != IDLE && millis() >= targetTime) {
+  if (currentState == MOVING_UP) {
+    currentPosition = FULL_TRAVEL_TIME;
+    #if DEBUG
+      if (!digitalRead(DEBUG_PIN)) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println(“Reached FULL OPEN”);
+        Serial.flush();
+        digitalWrite(LED_BUILTIN, LOW);
+      }
+    #endif
+  } else {
+    currentPosition = 0;
+    #if DEBUG
+      if (!digitalRead(DEBUG_PIN)) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println(“Reached FULL CLOSE”);
+        Serial.flush();
+        digitalWrite(LED_BUILTIN, LOW);
+      }
+    #endif
+  }
+  stopMotor();
+  currentState = IDLE;
+}
+</div>
+<p>
+در کد زیر:
+•  متغیرهای lastUp، lastDown و lastButtonState برای تشخیص لبه‌ها در تکرار بعدی حلقه به‌روز می‌شوند.
+•  تاخیر ۱۰ میلی‌ثانیه برای تثبیت خوانش‌ها و کاهش نویز/ریباند ورودی اعمال شده است.
+</p>
+<div class="code">
+// Update input states for next iteration
+lastUp = upPressed;
+lastDown = downPressed;
+lastButtonState = buttonPressed;
+
+// Small delay to stabilize input readings
+delay(10);
+</div>
+<h4>
+توضیح سیم‌بندی و بستن مدار آزمایش
+</h4>
+<p>
+</p>
