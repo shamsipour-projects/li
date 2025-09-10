@@ -42,8 +42,8 @@ def main():
         document_root,
 
         # For normal qr pages
-        qr_pages_rows=5,
-        qr_pages_cols=4,
+        qr_pages_rows=4,
+        qr_pages_cols=3,
 
         # For triangle qr pages
         #qr_pages_rows=1,

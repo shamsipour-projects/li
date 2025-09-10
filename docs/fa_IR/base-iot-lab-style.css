@@ -46,20 +46,20 @@ h6 {
     font-size: 2.5vmax;
 }
 
-.scientist-heading {
+.main-heading {
     text-align: center;
     font-family: BTitr;
     font-display: swap;
 }
 
 
-.scientist-text-heading {
+.main-heading {
     min-height: 4vh;
     font-size: 8.5vmax;
     /* font-size: 3.5vmax; */  /* a magic number for heading */
 }
 
-.scientist-pic {
+.main-img {
     border-radius: 30px;
     /* min-height: 36vh; */  /* experimental code added here to comply with
                                 the original master PDF (choke_987) but it
@@ -108,15 +108,15 @@ tr:nth-child(even) {
     border-collapse: collapse;
 } */
 
-.fa-IR-explanation {
+.main-text {
     font-family: BNazanin;
     font-size: 1.7vmax;  /* same magic number from table */
     text-align: justify;
     font-display: swap;
 }
 
-.fa-IR-explanation-header{
+.main-text-heading{
     font-family: BTitr;
-    font-size: 2.1vmax;  /* just a magic number bigger than normal explanation text and smaller than scientist-text-heading */
+    font-size: 2.1vmax;  /* just a magic number bigger than normal explanation text and smaller than main-heading */
     font-display: swap;
 }

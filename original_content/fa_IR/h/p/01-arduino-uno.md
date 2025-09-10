@@ -6,23 +6,25 @@ pic: img/01-arduino-uno.png
 name: "تابلو 01: آردوینو اونو"
 manufacturing_date: 2025
 category: تابلو
-manufacturer_name: اپتیک‌نیرو - <span class="english-text">Optic Niroo</span>
+manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
 manufacturer_country: ایران
 ---
 <p>
-تابلو 01 «آردوینو اونو
-<span class="english-text">(Arduino Uno)</span>»
+تابلو 01 «آردوینو اونو (
+<span class="en">Arduino Uno</span>)»
 دربردارنده موارد زیر است:
+</p>
 <ul>
   <li>
-  منبع تغذیه (با خروجی
-  <span class="english-text">5V</span>،
-  <span class="english-text">12V</span>،
-  <span class="english-text">24V</span>)
+    منبع تغذیه (با خروجی
+    <span class="en">5V</span>،
+    <span class="en">12V</span>،
+    <span class="en">24V</span>)
   </li>
   <li>
-  برد توسعه آردوینو اونو
-  <span class="english-text">(Arduino Uno)</span>
+    <a href="../m/01-arduino-uno.html">
+      برد توسعه آردوینو اونو
+      <span class="en">(Arduino Uno)</span>
+    </a>
   </li>
 </ul>
-</p>

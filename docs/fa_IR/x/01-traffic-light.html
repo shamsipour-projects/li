@@ -5,40 +5,30 @@
 <meta charset="UTF-8">
 <meta name="author" content="M. MAD">
 <link rel="icon" type="image/png" href="../../favicon.png">
-<link rel="stylesheet" href="../scientists_style.css">
+<link rel="stylesheet" href="../base-style.css">
+<link rel="stylesheet" href="../x-style.css">
 <link rel="stylesheet" href="../fonts.css">
 </head>
 <body dir="rtl" align="right">
-<h1 class="scientist-heading scientist-text-heading">Experiment 01: Traffic light</h1>
-<div class="scientist-pic-div scientist-heading">
-<img class="scientist-pic" src="img/p/07-displays.png">
+<header>
+<h1 class="main-heading main-heading">Experiment 01: Traffic light</h1>
+<nav>
+  <a href="/index.html">🏘 پروژه‌ها</a> &gt
+  <a href="/l/index.html">🏫 آزمایشگاه‌ها</a> &gt
+  <a href="../../index.html">🌍 آزمایشگاه اینترنت اشیاء</a> &gt
+  <a href="index.html">🔬 آزمایش‌ها</a> &gt
+  <a href="#">🔬 Experiment 01: Traffic light</a>
+</nav>
+</header>
+<article>
+<div class="main-img-div main-heading">
+<img class="main-img" src="img/01-traffic-light.png">
 </div>
-<table>
-  <tr>
-    <td><b class="table-pseudo-heading">نام:</b><br>آزمایش 01: پیاده‌سازی چراغ راهنمایی با قابلیت چشمک‌زن</td>
-    <td><b class="table-pseudo-heading">زاده:</b><br></td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">درگذشت:</b><br></td>
-    <td><b class="table-pseudo-heading">جنسیت:</b><br>زن</td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">ملیت:</b><br></td>
-    <td><b class="table-pseudo-heading">محل تحصیل:</b><br></td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">شناخته‌شده برای:</b><br></td>
-    <td><b class="table-pseudo-heading">جایزه‌ها:</b><br></td>
-  </tr>
-  <tr>
-    <td colspan="2"><b class="table-pseudo-heading">برچسب‌ها:</b><br></td>
-  </tr>
-</table>
-<div class="fa-IR-explanation">
-<h3 class="fa-IR-explanation-header">اهداف آزمایش</h3>
+<div class="main-text">
+<h3 class="fa-heading">اهداف آزمایش</h3>
 <ul>
   
-    <li>نصب و استفاده از کتابخانه‌های شخص ثالث خارجی در برنامه <span class="english-text">Arduino IDE</span>
+    <li>نصب و استفاده از کتابخانه‌های شخص ثالث خارجی در برنامه <span class="en">Arduino IDE</span>
 </li>
   
     <li>بارگذاری برنامه‌های پیش‌ساخته روی خانواده بردهای توسعه آردوینو</li>
@@ -47,16 +37,16 @@
   
     <li>مدریریت حالات اجرای برنامه</li>
   
-    <li>راه‌اندازی و کار کردن با نمایشگر ماتریس نقطه <span class="english-text">RGB LED (Dot-Matrix)</span>
+    <li>راه‌اندازی و کار کردن با نمایشگر ماتریس نقطه <span class="en">RGB LED (Dot-Matrix)</span>
 </li>
   
     <li>کار با خروجی‌های دیجیتال</li>
   
-    <li>یادگیری زمان‌بندی غیرانسدادی <span class="english-text">Non-blocking Timing</span>
+    <li>یادگیری زمان‌بندی غیرانسدادی <span class="en">Non-blocking Timing</span>
 </li>
   
 </ul>
-<h3 class="fa-IR-explanation-header">پیش‌نیازها</h3>
+<h3 class="fa-heading">پیش‌نیازها</h3>
 <p>
 کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
 این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
@@ -64,10 +54,10 @@
 <h4>
 توضیح کد آزمایش
 </h4>
-<p>
+<pre>
 تکه کد زیر، کتابخانه‌ی FastLED را وارد می‌کند و پارامترهای سخت‌افزاری را تعریف می‌کند: تعداد LEDها (۴×۴ = ۱۶)، پین دیتا، نوع LED (WS2812B) و ترتیب رنگ (GRB). همچنین آرایه‌ی leds که وضعیت هر LED را نگه‌ می‌دارد ساخته می‌شود.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 /* Copyright 2025 M. MAD */
 
 #include <FastLED.h>
@@ -79,11 +69,11 @@
 #define COLOR_ORDER GRB  // Most WS2812B strips use GRB order
 
 CRGB leds[NUM_LEDS];
-</div>
-<p>
+</code>
+<pre>
 اینجا نیز پین‌های ۴ دکمه تعریف شده‌اند (سبز، زرد، قرمز، و دکمه‌ی خاموش/فلاش). متغیرهای زمان برای فلاش (previousMillis و flashInterval) تعریف شده‌اند. سپس یک enum به نام Modes برای حالت‌ها ساخته شده و آرایه‌ی colors هم رنگ متناظر با هر حالت را نگه می‌دارد (حالت MODE_OFF = سیاه).
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 // --- Button Pin Definitions ---
 #define BUTTON_GREEN_PIN 2  // Button for green (all leds green)
 #define BUTTON_YELLOW_PIN 3  // Button for yellow (all leds yellow)
@@ -109,20 +99,20 @@ const CRGB colors[MODE_COUNT] = {
   CRGB::Red,    // MODE_RED
   CRGB::Black   // MODE_OFF
 };
-</div>
-<p>
+</code>
+<pre>
 وضعیت فعلی (چه رنگ/حالت فعلی است)، و پرچم‌های مربوط به حالت چشمک‌زن (flashing) و وضعیت داخلی چشمک (flashState) نگهداری می‌شوند.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 Modes currentMode = MODE_OFF;
 
 bool flashing = false; // true if the current mode is flashing
 bool flashState = false; // internal state to toggle between on and off for flash
-</div>
-<p>
+</code>
+<pre>
 FastLED را مقداردهی می‌کند، پین‌های دکمه را به صورت INPUT_PULLUP تنظیم می‌کند (یعنی دکمه‌ها فعال-پایین / active-low هستند) و در ابتدا همه LEDها را خاموش (Black) می‌گذارد.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 void setup() {
   // Initialize serial monitor for debugging.
   //Serial.begin(9600);
@@ -141,11 +131,11 @@ void setup() {
   // Start with off mode
   setAllLeds(CRGB::Black);
 }
-</div>
-<p>
+</code>
+<pre>
 در حلقه‌ی اصلی، هر بار وضعیت چهار دکمه خوانده می‌شود (فعّال وقتی سطح LOW است). با فشردن هر دکمه، تابع handleModeButtonPress با حالت مربوط صدا زده می‌شود و ۲۰۰ میلی‌ثانیه تاخیربرای ضدنوسان (debounce) اعمال می‌شود. بعد از بررسی دکمه‌ها، اگر حالت چشمک‌زن فعال باشد و حالت فعلی MODE_OFF نباشد، updateFlashing() اجرا می‌شود تا وضعیت چشمک را مدیریت کند؛ در غیر این صورت فقط FastLED.show() اجرا می‌شود.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 void loop() {
   // Check buttons (active low; adjust if your capacitive setup acts differently)
   if (digitalRead(BUTTON_GREEN_PIN) == LOW) {
@@ -173,14 +163,14 @@ void loop() {
     FastLED.show();
   }
 }
-</div>
-<p>
+</code>
+<pre>
 منطق رفتار هنگام فشردن دکمه:
 •	اگر دکمه‌ی همان حالت فعلی زده شود → حالت چشمک‌زن بین روشن/خاموش تغییر (toggle) می‌شود: اگر قبلاً چشمک نبود، شروع به چشمک می‌کند (و با flashState = true از حالت روشن آغاز می‌کند)، و اگر قبلاً چشمک می‌زد، چشمک را متوقف و رنگ ثابت را نمایش می‌دهد.
 •	اگر دکمه‌ی حالت دیگری زده شود → وضعیت (currentMode) به آن حالت جدید تغییر می‌کند و نمایش بصورت ثابت (غیر چشمک‌زن) روی رنگ مربوطه قرار می‌گیرد.
 نکته‌ریزی: اگر pressedMode == MODE_OFF باشد، colors[MODE_OFF] برابر CRGB::Black است؛ یعنی با زدن دکمه‌ی OFF، همه‌ی LEDها خاموش می‌شوند. همچنین اگر حالت فعلی MODE_OFF باشد و همان دکمه OFF را دوباره بزنید، تابع سعی می‌کند حالت flashing را فعال کند اما در حلقه‌ی اصلی (loop) شرط اجرای updateFlashing() فقط وقتی currentMode != MODE_OFF است اجرا خواهد شد — بنابراین چشمک‌زنی در حالت OFF عملاً اتفاقی نخواهد افتاد (جز اینکه flashing=true شود ولی به‌روزرسانی انجام نشود).
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 void handleModeButtonPress(Modes pressedMode) {
   if (currentMode == pressedMode) {
     // The same mode button is pressed.
@@ -201,11 +191,11 @@ void handleModeButtonPress(Modes pressedMode) {
     setAllLeds(colors[pressedMode]);
   }
 }
-</div>
-<p>
+</code>
+<pre>
 این تابع با استفاده از millis() و previousMillis هر flashInterval میلی‌ثانیه (500ms) وضعیت flashState را معکوس می‌کند و بسته به آن یا رنگ حالت را نمایش می‌دهد یا همه را خاموش می‌کند — یعنی مسئول چشمک‌زدن است.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 // updateFlashing: toggle between the mode color and off.
 void updateFlashing() {
   unsigned long currentMillis = millis();
@@ -219,11 +209,11 @@ void updateFlashing() {
     }
   }
 }
-</div>
-<p>
+</code>
+<pre>
 یک تابع کمکی ساده که همه‌ی LEDها را به یک رنگ مشخص تنظیم کرده و سپس خروجی را با FastLED.show() می‌فرستد.
-</p>
-<div class="code">
+</pre>
+<code lang="arduino">
 // ---------------------------------------------------------------
 // setAllLeds: Sets all LEDs in the matrix to the specified color.
 void setAllLeds(const CRGB &color) {
@@ -232,56 +222,55 @@ void setAllLeds(const CRGB &color) {
   }
   FastLED.show();
 }
-</div>
+</code>
 <h4>
 توضیح سیم‌بندی و بستن مدار آزمایش
 </h4>
-<p>
-</p>
-<h3 class="fa-IR-explanation-header">اقلام مورد نیاز</h3>
+<pre>
+</pre>
+<h3 class="fa-heading">اقلام مورد نیاز</h3>
 <ul>
   
     <li>یک دستگاه رایانه</li>
   
-    <li>تابلوی آردوینو اونو (برای برد توسعه آردوینو اونو) یا تابلوی آردوینو مگا (برای برد توسعه آردوینو مگا)</li>
-  
-    <li>کابل تبدیل <span class="english-text">USB Type-B</span> (پورت <span class="english-text">USB</span> روی بردهای توسعه آردوینو) به <span class="english-text">USB Type-A</span> (پورت <span class="english-text">USB</span> مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+    <li><a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a> (برای <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>) یا <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a> (برای <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
 </li>
   
-    <li>تابلوی حسگرهای دوم (برای صفحه‌کلید خازنی)</li>
+    <li>کابل تبدیل <span class="en">USB Type-B</span> (پورت <span class="en">USB</span> روی بردهای توسعه آردوینو) به <span class="en">USB Type-A</span> (پورت <span class="en">USB</span> مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+</li>
   
-    <li>تابلوی نمایشگرها (برای نمایشگر ماتریس نقطه <span class="english-text">RGB LED 4x4</span>)
+    <li><a href="../h/p/04-sonsors-II.html">تابلوی حسگرهای دوم</a> (برای صفحه‌کلید خازنی)
+</li>
+  
+    <li><a href="../h/p/07-displays.html">تابلوی نمایشگرها</a> (برای نمایشگر ماتریس نقطه <span class="en">RGB LED 4x4</span>)
 </li>
   
 </ul>
-<h3 class="fa-IR-explanation-header">مراحل آزمایش</h3>
+<h3 class="fa-heading">مراحل آزمایش</h3>
 <p>
 مراحل این آزمایش در ادامه آمده‌اند.
 </p>
-<h4 class="fa-IR-explanation-header">شبیه‌سازی مدار در نرم‌افزار <span class="english-text">Proteus</span> (اختیاری)</h4>
+<h4 class="fa-heading">شبیه‌سازی مدار در نرم‌افزار <span class="en">Proteus</span> (اختیاری)</h4>
 <p>
 برای شبیه‌سازی مدار در نرم‌افزار
-<span class="english-text">Proteus</span>،
+<span class="en">Proteus</span>،
 بر پایه مطالب گفته‌شده در بخش «نرم‌افزار
-<span class="english-text">Proteus</span>»
+<span class="en">Proteus</span>»
 پیوست ۳ عمل کنید.
 </p>
-<h4 class="fa-IR-explanation-header">پیاده‌سازی عملی مدار</h4>
+<h4 class="fa-heading">پیاده‌سازی عملی مدار</h4>
 <p>
 پیاده‌سازی عملی مدار خود دربردارنده دو زیربخش است که در ادامه توضیح داده می‌شوند.
 </p>
-<h5 class="fa-IR-explanation-header">ترجمه و بارگذاری کد آزمایش بر روی برد توسعه آردوینو</h5>
+<h5 class="fa-heading">ترجمه و بارگذاری کد آزمایش بر روی برد توسعه آردوینو</h5>
 <p>
 برای ترجمه و بارگذاری کد آزمایش، مانند آزمایش ۰ عمل کنید.
 </p>
-<h5 class="fa-IR-explanation-header">بستن مدار</h5>
+<h5 class="fa-heading">بستن مدار</h5>
 <p>
 برای بستن مدار، بر پایه مطالب گفته‌شده در زیربخش «توضیح سیم‌بندی و بستن مدار آزمایش» در بخش «پیش‌نیازها» عمل کنید.
 </p>
-<p>
-
-</p>
-
 </div>
+</article>
 </body>
 </html>

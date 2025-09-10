@@ -99,7 +99,29 @@ h_p = b.SecSpec(
     #custom_index_extractor=h.index_row_extractor,  # TODO
     index_title="فهرست تابلوها",
     qrpages_template_path="templates/fa_IR/h/p/qr_pages_table_template.html",
-    # qrpages_template_path="templates/fa_IR/h/qr_pages_triangle_template.html",
+    # qrpages_template_path="templates/fa_IR/h/p/qr_pages_triangle_template.html",
+    #custom_qr_table_writer=custom_qr_table_writer  # TODO
+)
+
+h_m = b.SecSpec(
+    name="fa_ir_h_m",
+    dst_path="docs/fa_IR/h/m",
+    url_prefix=h.PREFIX + "m/",
+    src_path="original_content/fa_IR/h/m",
+    data_spec=h.PanelData,
+    dst_template_path="templates/fa_IR/h/m/m_template.html",
+    src_template_path="templates/fa_IR/h/m/m_template.md",
+    #custom_data_extractor=h.md_data_extractor,  # TODO
+    rules=b.Rules(
+        copy_selected_data=True,
+        recursive_copy=True,
+        overwrite_when_copying=True,
+    ),
+    index_template_path="templates/fa_IR/h/m/m_index_template.html",
+    #custom_index_extractor=h.index_row_extractor,  # TODO
+    index_title="فهرست ماژول‌ها",
+    qrpages_template_path="templates/fa_IR/h/m/qr_pages_table_template.html",
+    # qrpages_template_path="templates/fa_IR/h/m/qr_pages_triangle_template.html",
     #custom_qr_table_writer=custom_qr_table_writer  # TODO
 )
 
@@ -109,7 +131,7 @@ h_sec = b.SecSpec(
     dst_path="docs/fa_IR/h",
     url_prefix=h.PREFIX,
     src_path="original_content/fa_IR/h",
-    sub_secs=[h_p],
+    sub_secs=[h_p, h_m],
     generate_index=False,
     generate_qr=False,
     generate_qrpages=False,

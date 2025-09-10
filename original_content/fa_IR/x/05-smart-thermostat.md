@@ -1,0 +1,357 @@
+---
+title: "Experiment 05: Smart thermostat"
+header: "Experiment 05: Smart thermostat"
+author: M. MAD
+pic: img/05-smart-thermostat.png
+name: "آزمایش 05: پیاده‌سازی ترموستات هوشمند"
+manufacturing_date: 2025
+category: آزمایش
+manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
+manufacturer_country: ایران
+goals:
+  - >
+    خوانش ورودی‌های آنالوگ و دیجیتال از
+    <span class="en">Joystick</span>
+  - >
+    راه‌اندازی و خوانش اطلاعات دما از حسگر
+    <span class="en">DS18B20</span>
+    (حسگر دمای ضد آب)
+  - >
+    راه‌اندازی و نمایش اطلاعات روی نمایشگر هفت‌قطعه‌ای
+    <span class="en">TM1637</span>
+ingredients:
+  - یک دستگاه رایانه
+  - >
+    <a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a>
+    (برای
+    <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>)
+    یا
+    <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a>
+    (برای
+    <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
+  - >
+    کابل تبدیل
+    <span class="en">USB Type-B</span>
+    (پورت
+    <span class="en">USB</span>
+    روی بردهای توسعه آردوینو) به
+    <span class="en">USB Type-A</span>
+    (پورت
+    <span class="en">USB</span>
+    مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+  - >
+    <a href="../h/p/03-sonsors-I.html">تابلوی حسگرهای یکم</a>
+    (برای حسگر دمای ضد آب
+    <span class="en">DS18B20</span>)
+  - >
+    <a href="../h/p/04-sonsors-II.html">تابلوی حسگرهای دوم</a>
+    (برای ماژول
+    <span class="en">Joystick</span>)
+  - >
+    <a href="../h/p/07-displays.html">تابلوی نمایشگرها</a>
+    (برای نمایشگر هفت‌قطعه‌ای
+    <span class="en">TM1637</span>)
+---
+<p>
+کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
+این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
+</p>
+<h4>
+توضیح کد آزمایش
+</h4>
+<pre>
+در کد زیر:
+•  کتابخانه‌های TM1637Display (نمایشگر 4-digit)، OneWire و DallasTemperature برای نمایش و خواندن دماسنج DS18B20 بارگذاری شده‌اند.
+•  ماکروی ENABLE_DEBUG در حالت خاموش (0) قرار دارد؛ بنابراین همه ماکروهای DEBUG_* بی‌اثر می‌شوند و هیچ خروجی سریالی یا چشمک LED دیباگ اجرا نخواهد شد.
+•  وقتی ENABLE_DEBUG == 1 شود، ماکروی DEBUG_SETUP(baud) پین DEBUG_PIN را با INPUT_PULLUP، LED داخلی را OUTPUT و سریال را با نرخ baud شروع می‌کند؛ ماکروی DEBUG(x) تنها وقتی عملیات داخل x را اجرا می‌کند که DEBUG_PIN فعال (LOW) باشد و در طول اجرای x LED داخلی چشمک بزند.
+</pre>
+<code lang="arduino">
+#include <TM1637Display.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ENABLE_DEBUG 0
+#if ENABLE_DEBUG                                                                                                                                    
+  #define DEBUG_PIN 12
+  #define DEBUG_LED LED_BUILTIN
+  #define DEBUG_SETUP(baud) do { \
+    pinMode(DEBUG_PIN, INPUT_PULLUP); \
+    pinMode(DEBUG_LED, OUTPUT); \
+    Serial.begin(baud); \
+  } while(0)
+
+  #define DEBUG_PRINT(x) do {Serial.print(x); Serial.flush();} while(0)
+  #define DEBUG_PRINTLN(x) do {Serial.println(x); Serial.flush();} while(0)
+  #define DEBUG_FLUSH() Serial.flush()
+  #define DEBUG(x) do { \
+    if (!digitalRead(DEBUG_PIN)) { \
+      digitalWrite(DEBUG_LED, HIGH); \
+      x; \
+      Serial.flush(); \
+      digitalWrite(DEBUG_LED, LOW); \
+    } \
+  } while(0)
+#else
+  #define DEBUG_SETUP(baud)
+  #define DEBUG_PRINT(x)
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_FLUSH()
+  #define DEBUG(x)
+#endif
+</code>
+<pre>
+در کد زیر نیز مقدار تاخیر ضدنوسان برای استفاده عمومی برابر 20 میلی‌ثانیه تعریف شده است. این مقدار در انتهای loop() به کار می‌رود و باعث مسدودشدن کوتاهِ حلقه می‌شود.
+</pre>
+<code lang="arduino">
+#define DEBOUNCE_DELAY 20  // Small delay to stabilize readings
+</code>
+<pre>
+در کد زیر (سنسور لمس و حالت تابستانی/زمستانی):
+•	پین تاچ TOUCH_PIN با مقدار 30 تعریف شده؛ مقدار 30 نشان می‌دهد برد مقصد احتمالاً آردوینو مگا یا بردی با تعداد پین زیاد است؛ روی آردوینو UNO این پین وجود ندارد — هنگام فراهم کردن سخت‌افزار باید برد مناسب انتخاب شود.
+•	متغیر isWinterMode حالت کنترلی را نگه می‌دارد (اگر true باشد، سیستم در «حالت زمستانی» کار می‌کند).
+•	تابع touchSetup() پین TOUCH_PIN را با pinMode(..., INPUT) پیکربندی می‌کند. تابع touchCheck() وقتی ورودی دیجیتال TOUCH_PIN برابر HIGH است و فاصله زمانی از لمس قبلی بیش از DEBOUNCE_DELAY باشد، مقدار isWinterMode را معکوس (toggle) می‌کند و زمان آخرین لمس را در lastTouch ذخیره می‌کند.
+</pre>
+<code lang="arduino">
+#define TOUCH_PIN 30
+
+bool isWinterMode = false;
+unsigned long lastTouch = 0;
+
+void touchSetup() {
+  pinMode(TOUCH_PIN, INPUT);
+}
+
+bool touchCheck() {
+  if (digitalRead(TOUCH_PIN) && millis() – lastTouch > DEBOUNCE_DELAY) {
+    isWinterMode = !isWinterMode;
+    lastTouch = millis();
+    DEBUG_PRINT(“isWinterMode = “);
+    DEBUG_PRINTLN(isWinterMode);
+  }
+  return isWinterMode;
+}
+</code>
+<pre>
+در کد زیر (جوی‌استیک و تنظیم هدف/حساسیت):
+•	پین JOY_Y روی A0 برای محور عمودی جوی‌استیک و پین دیجیتال JOY_BUTTON روی 2 برای دکمه جوی‌استیک تعریف شده است.
+•	isSettingGoalTemp تعیین می‌کند که در وضعیت فعلی کاربر دارد «دما هدف» (targetTemp) را تنظیم می‌کند یا «حساسیت» (sensitivity) را.
+•	تابع joyYCheck() مقدار آنالوگ JOY_Y را می‌خواند و اختلاف نسبت به lastJoyY را در yDiff قرار می‌دهد؛ اگر مقدار جابجایی بیشتر از JOY_THRESHOLD و مقدار فعلی yVal کمتر از 512 - DEADZONE باشد (جوی‌استیک عملاً به سمت بالا حرکت کرده)، مقدار targetTemp یا sensitivity یک واحد افزایش پیدا می‌کند، بسته به مقدار isSettingGoalTemp.
+•	تابع joyButtonCheck() وقتی دکمه جوی‌استیک JOY_BUTTON برابر HIGH شود (کلید آزاد→؟ توجه: با INPUT_PULLUP فشردن تولید LOW می‌کند؛ بنابراین رفتار بستگی به مدار دارد) و زمان از آخرین فشردن بزرگ‌تر از DEBOUNCE_DELAY باشد، مقدار isSettingGoalTemp را معکوس می‌کند.
+</pre>
+<code lang="arduino">
+#define JOY_Y A0  // Joystick Y-axis analog input
+#define JOY_BUTTON 2  // Joystick button (digital input)
+#define DEADZONE 50
+#define JOY_THRESHOLD 100
+
+int yVal = 512;
+int lastJoyY = 512;
+int yDiff = 0;
+bool isSettingGoalTemp = true;  // true = setting target temp, false = setting sensitivity
+unsigned long lastJoyButton = 0;
+int targetTemp = 21;  // Default target temperature
+int sensitivity = 2;  // Default sensitivity (1-10, representing 0.5-5°C)
+
+void joySetup() {
+  // Analog inputs do not need any setup
+  pinMode(JOY_BUTTON, INPUT_PULLUP);
+}
+
+void joyYCheck() {
+  yVal = analogRead(JOY_Y);
+  yDiff = yVal - lastJoyY;
+  // Check if joystick has moved beyond the deadzone
+  if (abs(yDiff) > JOY_THRESHOLD) {
+    if (yVal < (512 - DEADZONE)) {
+      // Joystick moved up
+      if (isSettingGoalTemp) {
+        targetTemp = constrain(targetTemp + 1, 1, 99);
+      } else {
+        sensitivity = constrain(sensitivity + 1, 1, 20);
+      }
+    }
+  }
+}
+
+void joyButtonCheck() {
+  if (digitalRead(JOY_BUTTON) && millis() - lastJoyButton > DEBOUNCE_DELAY) {
+    isSettingGoalTemp = !isSettingGoalTemp;
+    lastJoyButton = millis();
+    DEBUG_PRINT("isSettingGoalTemp = ");
+    DEBUG_PRINTLN(isSettingGoalTemp);
+  }
+  return isSettingGoalTemp;
+}
+#define JOY_Y A0  // Joystick Y-axis analog input
+</code>
+<pre>
+در کد زیر (دماسنج):
+•	پین ONE_WIRE_BUS برابر 2 تعریف شده که اتصال فیزیکی به سنسور DS18B20 را مشخص می‌کند. کتابخانه OneWire و DallasTemperature به ترتیب برای ارتباط و خواندن دما استفاده شده‌اند.
+•	تابع tempSensorSetup() فراخوانی sensors.begin() می‌کند و با readTemp() یک خوانش اولیه انجام می‌دهد.
+•	تابع readTemp() ابتدا sensors.requestTemperatures() را اجرا می‌کند (این فراخوان ممکن است زمان‌بر باشد) و سپس sensors.getTempCByIndex(0) را خوانده و مقدار را در currentTemp ذخیره می‌کند.
+•	تابع tempCheck() هر TEMP_READ_INTERVAL میلی‌ثانیه (۱۰۰۰ ms) یک بار readTemp() را اجرا و lastTempRead را به‌روزرسانی می‌کند.
+</pre>
+<code lang="arduino">
+#define ONE_WIRE_BUS 2
+#define TEMP_READ_INTERVAL 1000
+
+unsigned long lastTempRead = 0;
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+float currentTemp = 0;
+
+void tempSensorSetup() {
+  sensors.begin();
+  readTemp();  // Initial temperature reading
+}
+
+float readTemp() {
+  sensors.requestTemperatures();
+  currentTemp = sensors.getTempCByIndex(0);
+  return currentTemp;
+}
+
+float tempCheck() {
+  if (millis() – lastTempRead >= TEMP_READ_INTERVAL) {
+    currentTemp = readTemp();
+    lastTempRead = millis();
+  }
+  return currentTemp;
+}
+</code>
+<pre>
+در کد زیر (نمایشگر ۷ قطعه‌ای):
+•	پین CLK برابر 9 و DIO برابر 8 برای ماژول TM1637 انتخاب شده‌اند. شیء display با آن‌ها ساخته شده است.
+•	display.setBrightness(7) سطح روشنایی نمایشگر را تنظیم می‌کند.
+•	displayUpdate() بخش چپ نمایشگر (دو رقم اول) را به دمای فعلی (currentTemp) اختصاص می‌دهد و بخش راست (دو رقم دوم) را بسته به حالت isSettingGoalTemp یا blinkState به targetTemp یا sensitivity اختصاص می‌دهد. وقتی isSettingGoalTemp == false و blinkState == false، ارقام سمت راست خاموش می‌شوند (برای افکت چشمک هنگام تنظیم حساسیت).
+•	بیت 0x80 روی segments[1] (رقم دوم از چپ) برای نمایش «کالن» یا نقطه جداکننده قرار داده شده تا نشان‌دهنده isWinterMode باشد.
+</pre>
+<code lang="arduino">
+#define CLK 9
+#define DIO 8
+#define BLINK_INTERVAL 750
+
+TM1637Display display(CLK, DIO);
+
+bool blinkState = false;
+unsigned long lastBlinkTime = 0;
+
+void displaySetup() {
+  display.setBrightness(7);
+}
+
+void displayUpdate() {
+  // Handle blinking for sensitivity display
+  if (!isSettingGoalTemp && (millis() - lastBlinkTime >= BLINK_INTERVAL)) {
+    blinkState = !blinkState;
+    lastBlinkTime = millis();
+  }
+
+  // Create display segments
+  unsigned char segments[4]; // uint8_t
+
+  // Left side (current temperature)
+  int leftNum = constrain(round(currentTemp), 0, 99);
+  segments[0] = display.encodeDigit(leftNum / 10);
+  segments[1] = display.encodeDigit(leftNum % 10);
+
+  // Right side (target or sensitivity)
+  int displayTarget = isSettingGoalTemp ? targetTemp : sensitivity;
+  bool showRight = isSettingGoalTemp || blinkState;
+  if (showRight) {
+    segments[2] = display.encodeDigit(displayTarget / 10);
+    segments[3] = display.encodeDigit(displayTarget % 10);
+  } else {
+    segments[2] = 0;
+    segments[3] = 0;
+  }
+
+  // Set colon for winter mode
+  if (isWinterMode) {
+    segments[1] |= 0x80; // Add colon segment
+  }
+
+  display.setSegments(segments);
+}
+</code>
+<pre>
+در کد زیر (رله و منطق کنترلی):
+•	پین رله RELAY_PIN برابر 7 تنظیم شده و در relaySetup() به عنوان خروجی ساخته می‌شود.
+•	relayControl(bool state) وضعیت رله را با digitalWrite(RELAY_PIN, state) تغییـر می‌دهد و مقدار وضعیت را در relayState ذخیره می‌کند.
+•	relayHandle() مقدار tempDeadzone را از sensitivity * 0.5 محاسبه می‌کند (هر واحد حساسیت معادل 0.5 درجه) و سپس شرایط فعال/غیرفعال کردن رله را بر اساس حالت زمستان/تابستان تعیین می‌کند:
+o	حالت زمستان (isWinterMode == true): رله زمانی فعال می‌شود که currentTemp <= (targetTemp - tempDeadzone) یعنی دما پایین‌تر از هدف منهای مرده‌زون باشد (گرم‌کردن فعال شود).
+o	حالت تابستان (isWinterMode == false): رله زمانی فعال می‌شود که currentTemp >= (targetTemp + tempDeadzone) (مثل کنترل کولر).
+</pre>
+<code lang="arduino">
+#define RELAY_PIN 7
+
+float tempDeadzone = 0;
+bool relayState = false;
+
+void relaySetup() {
+  pinMode(RELAY_PIN, OUTPUT);
+}
+
+void relayControl(bool state) {
+  digitalWrite(RELAY_PIN, state);
+  relayState = state;
+  DEBUG_PRINT("relayState = ");
+  DEBUG_PRINTLN(relayState);
+}
+
+void relayHandle() {
+  tempDeadzone = sensitivity * 0.5; // Convert sensitivity to temperature tempDeadzone
+  // Winter mode: activate when temperature falls below target
+  // Summer mode: activate when temperature rises above target
+  relayControl(
+    (isWinterMode && currentTemp <= (targetTemp - tempDeadzone))
+    || (!isWinterMode && currentTemp >= (targetTemp + tempDeadzone))
+  );
+}
+</code>
+<pre>
+در کد زیر (تابع‌های راه‌اندازی و حلقه):
+1.	در setup() پیکربندی‌های سخت‌افزاری انجام می‌شوند: تاچ (touchSetup())، جوی‌استیک (joySetup())، دماسنج (tempSensorSetup())، نمایشگر (displaySetup())، و رله (relaySetup()). سپس ماکروی DEBUG_SETUP(9600) در صورت فعال بودن دیباگ اجرا می‌شود.
+2.	در loop() توالی کاری هر چرخه:
+o	touchCheck() وضعیت تاچ را بررسی می‌کند و در صورت لمس حالت isWinterMode را معکوس می‌کند.
+o	joyYCheck() مقدار محور عمودی جوی‌استیک را می‌خواند و در صورت حرکت قابل‌توجه مقدار targetTemp یا sensitivity را افزایش می‌دهد (با اشکالی که بالاتر توضیح داده شد).
+o	joyButtonCheck() حالت تنظیم بین «هدف دما» و «حساسیت» را جابجا می‌کند (اما در کد فعلی نوع بازگشتی نامتطابق دارد).
+o	tempCheck() در فواصل زمانی خوانش دما را به‌‌روز می‌کند.
+o	displayUpdate() نمایشگر 4‌رقمی را به‌روز می‌کند (نمایش دما فعلی سمت چپ و هدف/حساسیت سمت راست).
+o	relayHandle() وضعیت رله را بر اساس currentTemp و isWinterMode تنظیم می‌کند.
+o	حلقه با delay(DEBOUNCE_DELAY) برای ثبات خوانش‌ها ۲۰ms متوقف می‌شود.
+</pre>
+<code lang="arduino">
+void setup() {
+  touchSetup();
+  joySetup();
+
+  tempSensorSetup();
+  
+  displaySetup();
+  relaySetup();
+
+  DEBUG_SETUP(9600);
+}
+
+void loop() {
+  touchCheck();
+  joyYCheck();
+  joyButtonCheck();
+
+  tempCheck();
+
+  displayUpdate();
+  relayHandle();
+
+  // Small delay to stabilize readings
+  delay(DEBOUNCE_DELAY);
+}
+</code>
+<h4>
+توضیح سیم‌بندی و بستن مدار آزمایش
+</h4>
+<pre>
+</pre>

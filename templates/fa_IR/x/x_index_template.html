@@ -5,11 +5,12 @@
 <meta charset="UTF-8">
 <meta name="author" content="M. MAD">
 <link rel="icon" type="image/png" href="../../favicon.png">
-<link rel="stylesheet" href="../scientists_style.css">
+<link rel="stylesheet" href="../base-style.css">
+<link rel="stylesheet" href="../x-style.css">
 <link rel="stylesheet" href="../fonts.css">
 </head>
 <body dir="rtl" align="right">
-<h1 class="scientist-heading scientist-text-heading fa-heading">{{title}}</h1>
+<h1 class="main-heading main-heading fa-heading">{{title}}</h1>
 <div style="max-width: 100%; overflow: auto;">
 <table>
   <tr>
@@ -30,13 +31,6 @@
     <td><a href="{{r.get("link")}}">{{r.get("filename")}}</a></td>
     <td><a href="{{r.get("link")}}">{{r.get("title")}}</a></td>
     <td><a href="{{r.get("link")}}">{{r.get("name")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("born")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("died")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("nationality")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("alma_mater")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("known_for")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("awards")}}</a></td>
-    <td><a href="{{r.get("link")}}">{{r.get("tags")}}</a></td>
   </tr>
   {%- endfor %}
 </table>

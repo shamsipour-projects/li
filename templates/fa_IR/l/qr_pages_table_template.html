@@ -15,14 +15,16 @@
   <tr>
     {%-  for qr_filename, qr_display_name in row %}
     <td>
-      <div><img class="qr-code-img" src="../{{qr_filename}}"></div>
+      <div class="img-container">
+        <img class="qr-code-img" src="../{{qr_filename}}">
+      </div>
       <div class="qr-code-title">{{qr_display_name}}</div>
     </td>
     {%- endfor %}
   </tr>
   {%- endfor %}
 </table>
-<p dir="rtl" align="right" style="margin: 1%; text-align: center; font-family: BNazanin; font-size: 22px">
+<p dir="rtl" align="right" class="work-of">
 کاری از:
 <b>
 محمدمحسن اکبرپور درابی

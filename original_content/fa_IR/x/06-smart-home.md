@@ -1,0 +1,307 @@
+---
+title: "Experiment 06: Smart home"
+header: "Experiment 06: Smart home"
+author: M. MAD
+pic: img/06-smart-home.png
+name: "آزمایش 06: اجرای نمونه ساده از خانه هوشمند"
+manufacturing_date: 2025
+category: آزمایش
+manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
+manufacturer_country: ایران
+goals:
+  - >
+    خوانش اطلاعات دیجیتال از
+    <span class="en">TTP223</span>
+    (حسگر لمس خازنی)
+  - >
+    خوانش ورودی‌های آنالوگ و دیجیتال از
+    <span class="en">Joystick</span>
+  - >
+    راه‌اندازی و خوانش اطلاعات دما از حسگر
+    <span class="en">DHT22</span>
+    (حسگر دما و رطوبت محیط)
+  - >
+    راه‌اندازی و خوانش اطلاعات میزان گاز هیدروژن در هوا از حسگر
+    <span class="en">MQ8</span>
+    (حسگر گاز هیدروژن)
+  - >
+    راه‌اندازی و خوانش اطلاعات نور محیط از حسگر
+    <span class="en">GY-30</span>
+    (حسگر شدت نور، لوکس متر)
+  - >
+    راه‌اندازی و خوانش اطلاعات وزن/فشار از حسگر
+    <span class="en">HX711 + Loadcell</span>
+    (حسگر وزن/فشار)
+  - >
+    راه‌اندازی و نمایش اطلاعات روی نمایشگر
+    <span class="en">LCD 1602</span>
+    ماتریس نقطه
+ingredients:
+  - یک دستگاه رایانه
+  - >
+    <a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a>
+    (برای
+    <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>)
+    یا
+    <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a>
+    (برای
+    <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
+  - >
+    کابل تبدیل
+    <span class="en">USB Type-B</span>
+    (پورت
+    <span class="en">USB</span>
+    روی بردهای توسعه آردوینو) به
+    <span class="en">USB Type-A</span>
+    (پورت
+    <span class="en">USB</span>
+    مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+  - >
+    <a href="../h/p/03-sonsors-I.html">تابلوی حسگرهای یکم</a>
+    (برای
+    <span class="en">TTP223 + Ralay + LED</span>،
+    حسگر دما و رطوبت محیط
+    <span class="en">DHT22</span>،
+    حسگر وزن/فشار
+    <span class="en">HX711 + Loadcell</span>
+    و حسگر گاز هیدروژن
+    <span class="en">MQ8</span>)
+  - >
+    <a href="../h/p/04-sonsors-II.html">تابلوی حسگرهای دوم</a>
+    (برای ماژول
+    <span class="en">Joystick</span>
+    و حسگر شدت نور
+    <span class="en">GY-30</span>)
+  - >
+    <a href="../h/p/07-displays.html">تابلوی نمایشگرها</a>
+    (برای نمایشگر
+    <span class="en">LCD 1602</span>
+    ماتریس نقطه)
+---
+<p>
+کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
+این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
+</p>
+<h4>
+توضیح کد آزمایش
+</h4>
+<pre>
+در کد زیر (سربرگ‌ها و کتابخانه‌ها):
+•	Wire.h برای رابط I²C استفاده می‌شود.
+•	LiquidCrystal_I2C.h برای نمایشگر 16×2 با تبدیل I²C به HD44780.
+•	Adafruit_Sensor.h, DHT.h, DHT_U.h برای سنسور دما/رطوبت DHT22.
+•	HX711.h برای مبدل ADC مخصوص لودسل (ماژول HX711).
+•	BH1750.h برای سنجش شدت نور (سنسور GY-30 / BH1750).
+</pre>
+<code lang="arduino">
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
+#include <HX711.h>
+#include <BH1750.h>
+</code>
+<pre>
+در کد زیر (تعریف پین‌ها و ایجاد اشیاء حسگرها):
+•	TTP223_PIN پین ماژول لمس (TTP223) روی دیجیتال 2 تعریف شده.
+•	JOYSTICK_Y_PIN پین آنالوگ A0 برای محور عمودی جوی‌استیک.
+•	DHT22_PIN پین دیجیتال 3 برای سنسور DHT22. مقدار DHT22 دومین پارامتر به سازنده DHT محدوده/نوع سنسور را مشخص می‌کند.
+•	MQ8_PIN ورودی آنالوگ A1 برای سنسور گاز MQ-8 (H₂).
+•	HX711_DT_PIN و HX711_SCK_PIN پین‌های دیتای لودسل (DT) و کلاک (SCK) هستند.
+•	شیء dht برای DHT22، scale برای HX711، lightMeter برای BH1750، و lcd برای نمایشگر I²C ساخته شده است. آدرس I²C نمایشگر 0x27 فرضی است و در صورت لزوم باید مطابق سخت‌افزار اصلاح شود.
+</pre>
+<code lang="arduino">
+// Pin definitions
+#define TTP223_PIN 2
+#define JOYSTICK_Y_PIN A0
+#define DHT22_PIN 3
+#define MQ8_PIN A1
+#define HX711_DT_PIN 4
+#define HX711_SCK_PIN 5
+
+// Sensor objects
+DHT dht(DHT22_PIN, DHT22);
+HX711 scale;
+BH1750 lightMeter;
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Change address if needed
+</code>
+<pre>
+در کد زیر (متغیرهای وضعیت نمایشگر و جوی‌استیک):
+•	currentScreen نمایانگر صفحه فعلی نمایشگر (مقادیر 0..5).
+•	numScreens تعداد صفحات تعریف‌شده برابر 6 است (تطابق با caseهای switch در loop).
+•	lastYValue برای ردیابی مقدار قبلی محور Y تعریف شده ولی در کد فعلی استفاده نشده (قابل استفاده برای smoothing یا تشخیص حرکت).
+•	joyMoved پرچمِ جلوگیری از پیمایش پیوسته هنگام نگه داشتن جوی‌استیک است (debounce ساده).
+</pre>
+<code lang="arduino">
+// Variables
+int currentScreen = 0;
+const int numScreens = 6;
+int lastYValue = 0;
+bool joyMoved = false;
+</code>
+<pre>
+در کد زیر (تابع راه‌اندازی):
+•	پورت سریال با باودریت 9600 باز می‌شود برای دیباگ/لاگ.
+•	پین دیجیتال مربوط به ماژول تاچ (TTP223_PIN) به عنوان ورودی پیکربندی شده است.
+•	dht.begin() راه‌اندازی DHT22، scale.begin(...) راه‌اندازی HX711 و lightMeter.begin() راه‌اندازی BH1750 را انجام می‌دهد.
+•	نمایشگر I²C با lcd.init() و روشن کردن بک‌لایت با lcd.backlight() راه‌اندازی شده و پیام «Initializing...» به مدت 2 ثانیه نمایش داده می‌شود. پس از آن lcd.clear() نمایشگر پاک می‌شود.
+</pre>
+<code lang="arduino">
+void setup() {
+  Serial.begin(9600);
+  
+  // Initialize sensors
+  pinMode(TTP223_PIN, INPUT);
+  dht.begin();
+  scale.begin(HX711_DT_PIN, HX711_SCK_PIN);
+  lightMeter.begin();
+  
+  // Initialize LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.print("Initializing...");
+  delay(2000);
+  lcd.clear();
+}
+</code>
+<pre>
+در کد زیر (تابع حلقه اصلی و منطق ناوبری صفحات):
+1.	yValue = analogRead(JOYSTICK_Y_PIN) مقدار محور عمودی جوی‌استیک را خوانده و در بازه 0..1023 قرار می‌دهد.
+2.	شرط yValue < 400 && !joyMoved وقتی جوی‌استیک به سمت یک جهت (مثلاً بالا) کشیده شده و پرچم joyMoved خاموش است، شماره صفحه را به جلو می‌برد و joyMoved = true می‌شود تا حرکت مداوم در اثر نگه داشتن دسته رخ ندهد.
+3.	شرط yValue > 600 && !joyMoved برای حرکت در جهت مخالف (صفحه قبلی) کاربرد دارد و استفاده از (currentScreen - 1 + numScreens) % numScreens باعث گردش ایمن و دورانی بین صفحات می‌شود.
+4.	محدوده 400..600 به عنوان منطقه بی‌حرکتی jοy stick تعریف شده تا وقتی دسته به مرکز برگشت، joyMoved ریست شود.
+5.	switch(currentScreen) بر اساس مقدار currentScreen یکی از توابع نمایشگر (showTTP223, showJoystick, showDHT22, showMQ8, showGY30, showLoadCell) را فراخوانی می‌کند.
+6.	delay(200) نرخ بروزرسانی را به 200ms کاهش می‌دهد و تا حدی از لرزش ناوبری جلوگیری می‌کند.
+</pre>
+<code lang="arduino">
+void loop() {
+  // Read joystick for navigation
+  int yValue = analogRead(JOYSTICK_Y_PIN);
+  
+  // Handle navigation
+  if (yValue < 400 && !joyMoved) {
+    currentScreen = (currentScreen + 1) % numScreens;
+    joyMoved = true;
+    lcd.clear();
+  } else if (yValue > 600 && !joyMoved) {
+    currentScreen = (currentScreen - 1 + numScreens) % numScreens;
+    joyMoved = true;
+    lcd.clear();
+  }
+  
+  if (yValue >= 400 && yValue <= 600) {
+    joyMoved = false;
+  }
+
+  // Display current screen
+  switch (currentScreen) {
+    case 0: showTTP223(); break;
+    case 1: showJoystick(); break;
+    case 2: showDHT22(); break;
+    case 3: showMQ8(); break;
+    case 4: showGY30(); break;
+    case 5: showLoadCell(); break;
+  }
+  
+  delay(200);
+}
+</code>
+<pre>
+در کد زیر (نمایش وضعیت حسگر لمس):
+•	خط یکم نمایشگر عبارت «Touch Sensor: » را چاپ می‌کند.
+•	خط دوم مقدار خوانده‌شده از digitalRead(TTP223_PIN) را بررسی کرده و در صورت HIGH متن "ACTIVE " و در صورت LOW متن "INACTIVE" چاپ می‌کند.
+نکات: ماژول‌های TTP223 معمولاً خروجی HIGH در لمس تولید می‌کنند اما بستگی به مدل/پیکربندی دارد؛ پیشنهاد می‌شود در صورت رفتار معکوس، شرط بررسی تغییر یابد. همچنین چاپ متن کوتاه‌تر بعد از متن طولانی‌تر قبلی ممکن است باقی‌مانده کاراکترهای قبلی را نشان دهد (پیشنهاد: برای پاکسازی کامل خط، پر کردن با فاصله‌های اضافی).
+</pre>
+<code lang="arduino">
+void showTTP223() {
+  lcd.setCursor(0, 0);
+  lcd.print(“Touch Sensor: “);
+  lcd.setCursor(0, 1);
+  lcd.print(digitalRead(TTP223_PIN) ? “ACTIVE “ : “INACTIVE”);
+}
+</code>
+<pre>
+در کد زیر خط یکم متن «Joystick Y:» و خط دوم مقدار خام analogRead(JOYSTICK_Y_PIN) را نمایش می‌دهد. این نمایش مقدار برای دیباگ/کالیبراسیون مفید است.
+</pre>
+<code lang="arduino">
+void showJoystick() {
+  lcd.setCursor(0, 0);
+  lcd.print("Joystick Y:");
+  lcd.setCursor(0, 1);
+  lcd.print("Value: ");
+  lcd.print(analogRead(JOYSTICK_Y_PIN));
+}
+</code>
+<pre>
+در کد زیر (دماسنج و طوبت‌سنج):
+•	dht.readHumidity() مقدار رطوبت و dht.readTemperature() مقدار دما را (در درجه سانتی‌گراد) خوانده و در h و t قرار می‌دهد.
+•	خط یکم LCD دما را با پسوند "C" نمایش می‌دهد و خط دوم رطوبت را با علامت درصد نمایش می‌دهد.
+</pre>
+<code lang="arduino">
+void showDHT22() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(t);
+  lcd.print("C");
+  
+  lcd.setCursor(0, 1);
+  lcd.print("Hum: ");
+  lcd.print(h);
+  lcd.print("%");
+}
+</code>
+<pre>
+در کد زیر مقدار خام ADC از پین MQ8_PIN خوانده شده و نشان داده می‌شود. MQ-8 خروجی آنالوگ دارد و برای تشخیص نسبی غلظت هیدروژن مناسب است، اما کالیبراسیون و مدولاسیون حرارتی موردنیاز است.
+</pre>
+<code lang="arduino">
+void showMQ8() {
+  int sensorValue = analogRead(MQ8_PIN);
+  lcd.setCursor(0, 0);
+  lcd.print("MQ8 H2 Sensor:");
+  lcd.setCursor(0, 1);
+  lcd.print("Value: ");
+  lcd.print(sensorValue);
+}
+</code>
+<pre>
+در کد زیر (لوکس‌متر):
+•	lightMeter.readLightLevel() مقدار روشنایی بر حسب لوکس خوانده و در lux قرار می‌گیرد.
+•	خط یکم LCD عنوان «Illuminance:» و خط دوم مقدار لوکس به‌همراه واحد " lx" را نمایش می‌دهد.
+</pre>
+<code lang="arduino">
+void showGY30() {
+  float lux = lightMeter.readLightLevel();
+  lcd.setCursor(0, 0);
+  lcd.print("Illuminance:");
+  lcd.setCursor(0, 1);
+  lcd.print(lux);
+  lcd.print(" lx");
+}
+</code>
+<pre>
+در کد زیر (ترازو):
+•	scale.is_ready() بررسی می‌کند ماژول HX711 آماده خواندن است یا خیر. در صورت آماده بودن scale.read() مقدار خام ADC (نوع long) را می‌خواند و چاپ می‌کند. در غیر این صورت "Not ready" نمایش داده می‌شود.
+•	خروجی scale.read() مقدار خام بدون کالیبراسیون است؛ برای تبدیل به واحد وزنی باید scale.set_scale() و scale.tare() و سپس scale.get_units() یا تقسیم مقدار خام با فاکتور کالیبراسیون انجام شود.
+</pre>
+<code lang="arduino">
+void showLoadCell() {
+  lcd.setCursor(0, 0);
+  lcd.print("Load Cell:");
+  lcd.setCursor(0, 1);
+
+  if (scale.is_ready()) {
+    lcd.print(scale.read());
+  } else {
+    lcd.print("Not ready");
+  }
+}
+</code>
+<h4>
+توضیح سیم‌بندی و بستن مدار آزمایش
+</h4>
+<pre>
+</pre>

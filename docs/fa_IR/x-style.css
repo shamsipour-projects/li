@@ -1,0 +1,29 @@
+td, th {
+    border: 1px solid #66ADDA;
+    padding: 8px;
+    width: 50%;
+}
+
+tr:nth-child(even) {
+    background-color: #c9efffff;
+}
+
+pre {
+    font-family: BNazanin;
+    font-size: 1.7vmax;
+    text-align: justify;
+    /* text-wrap-mode: wrap; */  /* Not supported in chrome */
+    max-width: 100%;
+    overflow-x: auto;  /* horizontal scroll if content is wider than container */
+}
+
+code {
+    direction: ltr;  /* enforce left-to-right rendering */
+    unicode-bidi: isolate-override;  /* prevent bidi inheritance and keep embedding */
+    display: block;  /* create independent BIDI/container context (so start/left are resolved locally) */
+    white-space: pre;  /* preserves line breaks and spaces exactly like <pre> */
+    font-family: Consolas,"courier new";
+    font-display: swap;
+    max-width: 100%;
+    overflow-x: auto;  /* horizontal scroll if content is wider than container */
+}

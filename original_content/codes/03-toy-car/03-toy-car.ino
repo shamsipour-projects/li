@@ -4,7 +4,7 @@
 #if ENABLE_DEBUG
   #define DEBUG_PIN 12
   #define DEBUG_LED LED_BUILTIN
-  #define DEBUG_INIT(baud) do { \
+  #define DEBUG_SETUP(baud) do { \
     pinMode(DEBUG_PIN, INPUT_PULLUP); \
     pinMode(DEBUG_LED, OUTPUT); \
     Serial.begin(baud); \
@@ -13,7 +13,7 @@
   #define DEBUG_PRINT(x) do {Serial.print(x); Serial.flush();} while(0)
   #define DEBUG_PRINTLN(x) do {Serial.println(x); Serial.flush();} while(0)
   #define DEBUG_FLUSH() Serial.flush()
-  #define DEBUG(x)  do { \
+  #define DEBUG(x) do { \
     if (!digitalRead(DEBUG_PIN)) { \
       digitalWrite(DEBUG_LED, HIGH); \
       x; \
@@ -22,7 +22,7 @@
     } \
   } while(0)
 #else
-  #define DEBUG_INIT(baud)
+  #define DEBUG_SETUP(baud)
   #define DEBUG_PRINT(x)
   #define DEBUG_PRINTLN(x)
   #define DEBUG_FLUSH()
@@ -101,7 +101,7 @@ void setup() {
   steeringStop();
   
   // Initialize serial communication for debugging
-  DEBUG_INIT(9600);
+  DEBUG_SETUP(9600);
 }
 
 void loop() {

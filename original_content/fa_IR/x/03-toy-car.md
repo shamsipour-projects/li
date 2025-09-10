@@ -2,43 +2,52 @@
 title: "Experiment 03: Toy car"
 header: "Experiment 03: Toy car"
 author: M. MAD
-pic: img/p/07-displays.png
+pic: img/03-toy-car.png
 name: "آزمایش 03: پیاده‌سازی خودروی اسباب‌بازی ساده"
 manufacturing_date: 2025
 category: آزمایش
-manufacturer_name: اپتیک‌نیرو - <span class="english-text">Optic Niroo</span>
+manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
 manufacturer_country: ایران
 goals:
   - >
-    نصب و استفاده از کتابخانه‌های شخص ثالث خارجی در برنامه
-    <span class="english-text">Arduino IDE</span>
-  - بارگذاری برنامه‌های پیش‌ساخته روی خانواده بردهای توسعه آردوینو
-  - کار با ورودی‌های دیجیتال دریافتی از صفحه‌کلید خازنی
-  - مدریریت حالات اجرای برنامه
+    خوانش ورودی‌های آنالوگ و دیجیتال از
+    <span class="en">Joystick</span>
   - >
-    راه‌اندازی و کار کردن با نمایشگر ماتریس نقطه
-    <span class="english-text">RGB LED (Dot-Matrix)</span>
-  - کار با خروجی‌های دیجیتال
-  - >
-    یادگیری زمان‌بندی غیرانسدادی
-    <span class="english-text">Non-blocking Timing</span>
+    راه‌اندازی و ارسال فرامین و پالس‌های
+    <span class="en">PWM</span>
+    به درایور موتور
+    <span class="en">L298N</span>
+    (پل
+    <span class="en">H</span>)
+  - کنترل همزمان دو موتور الکتریکی با دو روش متفاوت
 ingredients:
   - یک دستگاه رایانه
-  - تابلوی آردوینو اونو (برای برد توسعه آردوینو اونو) یا تابلوی آردوینو مگا (برای برد توسعه آردوینو مگا)
+  - >
+    <a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a>
+    (برای
+    <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>)
+    یا
+    <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a>
+    (برای
+    <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
   - >
     کابل تبدیل
-    <span class="english-text">USB Type-B</span>
+    <span class="en">USB Type-B</span>
     (پورت
-    <span class="english-text">USB</span>
+    <span class="en">USB</span>
     روی بردهای توسعه آردوینو) به
-    <span class="english-text">USB Type-A</span>
+    <span class="en">USB Type-A</span>
     (پورت
-    <span class="english-text">USB</span>
+    <span class="en">USB</span>
     مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
-  - تابلوی حسگرهای دوم (برای صفحه‌کلید خازنی)
   - >
-    تابلوی نمایشگرها (برای نمایشگر ماتریس نقطه
-    <span class="english-text">RGB LED 4x4</span>)
+    <a href="../h/p/04-sonsors-II.html">تابلوی حسگرهای دوم</a>
+    (برای ماژول
+    <span class="en">Joystick</span>)
+  - >
+    <a href="../h/p/05-sensors-III.html">تابلوی حسگرهای سوم</a>
+    (برای موتور و درایور موتور
+    <span class="en">L298N</span>)
 ---
 <p>
 کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
@@ -47,177 +56,225 @@ ingredients:
 <h4>
 توضیح کد آزمایش
 </h4>
-<p>
-تکه کد زیر، کتابخانه‌ی FastLED را وارد می‌کند و پارامترهای سخت‌افزاری را تعریف می‌کند: تعداد LEDها (۴×۴ = ۱۶)، پین دیتا، نوع LED (WS2812B) و ترتیب رنگ (GRB). همچنین آرایه‌ی leds که وضعیت هر LED را نگه‌ می‌دارد ساخته می‌شود.
-</p>
-<div class="code">
-/* Copyright 2025 M. MAD */
+<pre>
+در کد زیر (سربرگ و کلان‌دستورهای دیباگ):
+•	ماکروی ENABLE_DEBUG سطحِ فعال بودنِ دیباگ را مشخص می‌کند. مقدار فعلی صفر است (0) بنابراین بخش‌های داخل #if ENABLE_DEBUG در زمان کامپایل نادیده گرفته می‌شوند و تعریف‌های خالی (#define DEBUG_PRINT(x) و غیره) جایگزین می‌گردند.
+•	وقتی ENABLE_DEBUG == 1 فعال شود:
+o	DEBUG_PIN روی پین دیجیتال 12 تعریف می‌شود و DEBUG_LED از LED_BUILTIN استفاده می‌کند.
+o	ماکروی DEBUG_INIT(baud) پین DEBUG_PIN را با INPUT_PULLUP، DEBUG_LED را با OUTPUT و سریال (Serial.begin(baud)) را راه‌اندازی می‌کند.
+o	ماکروهای DEBUG_PRINT، DEBUG_PRINTLN و DEBUG(x) برای چاپ سریع مقادیر و چشمک‌زدن LED هنگام چاپ استفاده می‌شوند (چاپ فقط در صورتی اجرا می‌شود که DEBUG_PIN در حالت فعال باشد).
+•	نتیجه عملی: در پیکربندی فعلی (ENABLE_DEBUG = 0) هیچ خروجی سریال یا LED دیباگ در کد اجرا نمی‌شود.
 
-#include <FastLED.h>
+</pre>
+<code lang="arduino">
+#define ENABLE_DEBUG 0
+#if ENABLE_DEBUG
+  #define DEBUG_PIN 12
+  #define DEBUG_LED LED_BUILTIN
+  #define DEBUG_INIT(baud) do { \
+    pinMode(DEBUG_PIN, INPUT_PULLUP); \
+    pinMode(DEBUG_LED, OUTPUT); \
+    Serial.begin(baud); \
+  } while(0)
 
-// --- Configuration for LED Matrix ---
-#define NUM_LEDS 16  // 4x4 LED matrix
-#define DATA_PIN 6  // Pin connected to the LED data line
-#define LED_TYPE WS2812B  // Change if you use a different LED type
-#define COLOR_ORDER GRB  // Most WS2812B strips use GRB order
+  #define DEBUG_PRINT(x) do {Serial.print(x); Serial.flush();} while(0)
+  #define DEBUG_PRINTLN(x) do {Serial.println(x); Serial.flush();} while(0)
+  #define DEBUG_FLUSH() Serial.flush()
+  #define DEBUG(x)  do { \
+    if (!digitalRead(DEBUG_PIN)) { \
+      digitalWrite(DEBUG_LED, HIGH); \
+      x; \
+      Serial.flush(); \
+      digitalWrite(DEBUG_LED, LOW); \
+    } \
+  } while(0)
+#else
+  #define DEBUG_INIT(baud)
+  #define DEBUG_PRINT(x)
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_FLUSH()
+  #define DEBUG(x)
+#endif
+</code>
+<pre>
+در کد زیر (تعریف پین‌ها و پارامترهای پیکربندی):
+•	ورودی‌ها:
+o	محور عمودی جوی‌استیک برای «پیش‌رانش» روی آنالوگ A0 (JOY_Y) و محور افقی برای «فرمان‌دهی» روی آنالوگ A1 (JOY_X) است.
+o	دکمه جوی‌استیک روی پین دیجیتال 2 تعریف شده (JOY_BUTTON) ولی در ادامه برنامه عملاً خوانده نشده (تعریف شده ولی استفاده نشده).
+•	خروجی‌ها برای درایور موتور (مثال: ماژول L298N):
+o	PM1 و PM2 جهت موتور پیش‌رانش را تعیین می‌کنند؛ PMPWM پین ENA برای PWM سرعت پیش‌رانش است.
+o	SM1 و SM2 جهت موتور فرمان‌دهی را تعیین می‌کنند؛ SMPWM پین ENB برای PWM فرمان‌دهی است.
+•	پارامترهای آستانه:
+o	PROP_MIN مقدار حداقلِ PWM برای موتور پیش‌رانش جهت حذف منطقه نوسان (dead zone).
+o	STEER_MIN حداقلِ PWM برای موتور فرمان‌دهی جهت حذف لرزش‌های جزئی.
+o	STEER_MAX حداکثرِ PWM برای جلوگیری از اوردراِیوِ (overdrive) موتور فرمان.
+•	prevX با مقدار 512 مقدار مرکز (وسط) محور X را ذخیره می‌کند و برای محاسبه مشتق یا تغییر مواضع (delta) استفاده می‌شود.
+</pre>
+<code lang="arduino">
+// Pin Definitions
+#define JOY_Y A0  // Joystick Y-axis analog input
+#define JOY_X A1  // Joystick X-axis analog input
+#define JOY_BUTTON 2  // Joystick button (digital input)
 
-CRGB leds[NUM_LEDS];
-</div>
-<p>
-اینجا نیز پین‌های ۴ دکمه تعریف شده‌اند (سبز، زرد، قرمز، و دکمه‌ی خاموش/فلاش). متغیرهای زمان برای فلاش (previousMillis و flashInterval) تعریف شده‌اند. سپس یک enum به نام Modes برای حالت‌ها ساخته شده و آرایه‌ی colors هم رنگ متناظر با هر حالت را نگه می‌دارد (حالت MODE_OFF = سیاه).
-</p>
-<div class="code">
-// --- Button Pin Definitions ---
-#define BUTTON_GREEN_PIN 2  // Button for green (all leds green)
-#define BUTTON_YELLOW_PIN 3  // Button for yellow (all leds yellow)
-#define BUTTON_RED_PIN 4  // Button for red (all leds red)
-#define BUTTON_OFF_PIN 5  // Button for flashing mode
+#define PM1 3  // Propulsion motor direction 1, L298N IN1 pin
+#define PM2 4  // Propulsion motor direction 2, L298N IN2 pin
+#define PMPWM 5  // Propulsion motor PWM, L298N ENA pin (PWM)
 
-// --- Timing for flashing mode ---
-unsigned long previousMillis = 0;
-const unsigned long flashInterval = 500; // 500ms flashing interval
+#define SM1 8  // Steering motor direction 1, L298N IN3 pin
+#define SM2 7  // Steering motor direction 2, L298N IN4 pin
+#define SMPWM 6  // Steering motor PWM, L298N ENB pin (PWM)
 
-// --- Modes ---
-enum Modes {
-  MODE_GREEN = 0,
-  MODE_YELLOW,
-  MODE_RED,
-  MODE_OFF,
-  MODE_COUNT  // Helper to get number of normal modes
-};
+// Configuration
+#define PROP_MIN 60  // Minimum propulsion PWM (dead zone threshold)
+#define STEER_MIN 15  // Minimum steering PWM (dead zone threshold)
+#define STEER_MAX 200  // Maximum steering PWM (prevent overdrive)
 
-const CRGB colors[MODE_COUNT] = {
-  CRGB::Green,  // MODE_GREEN
-  CRGB::Yellow, // MODE_YELLOW
-  CRGB::Red,    // MODE_RED
-  CRGB::Black   // MODE_OFF
-};
-</div>
-<p>
-وضعیت فعلی (چه رنگ/حالت فعلی است)، و پرچم‌های مربوط به حالت چشمک‌زن (flashing) و وضعیت داخلی چشمک (flashState) نگهداری می‌شوند.
-</p>
-<div class="code">
-Modes currentMode = MODE_OFF;
+int prevX = 512;  // Previous X position (centered)
+</code>
+<pre>
+در کد زیر (توابع کنترل موتور پیشران):
+•	propulsionStop() هر دو پین جهت (PM1 و PM2) را LOW می‌کند و PWM روی PMPWM را صفر قرار می‌دهد تا موتور پیش‌رانش متوقف شود.
+•	propulsionForward(pwm) و propulsionBackward(pwm) جهت‌های PM1/PM2 را برای حرکت جلو/عقب تنظیم می‌کنند و مقدار PWM را روی PMPWM می‌نویسند. پارامتر پیش‌فرض PWM برابر 255 (حداکثر) است.
+•	نکته استفاده‌ای: نوع پارامتر unsigned char برای مقدار PWM تعیین شده که مقادیر 0–255 را می‌پذیرد.
+</pre>
+<code lang="arduino">
+void propulsionStop() {
+  digitalWrite(PM1, LOW);
+  digitalWrite(PM2, LOW);
+  analogWrite(PMPWM, 0);  // Ensure the motor got disabled
+}
 
-bool flashing = false; // true if the current mode is flashing
-bool flashState = false; // internal state to toggle between on and off for flash
-</div>
-<p>
-FastLED را مقداردهی می‌کند، پین‌های دکمه را به صورت INPUT_PULLUP تنظیم می‌کند (یعنی دکمه‌ها فعال-پایین / active-low هستند) و در ابتدا همه LEDها را خاموش (Black) می‌گذارد.
-</p>
-<div class="code">
+void propulsionForward (unsigned char pwm = 255) {
+  digitalWrite(PM1, HIGH);
+  digitalWrite(PM2, LOW);
+  analogWrite(PMPWM, pwm);
+}
+
+void propulsionBackward(unsigned char pwm = 255) {
+  digitalWrite(PM1, LOW);
+  digitalWrite(PM2, HIGH);
+  analogWrite(PMPWM, pwm);
+}
+</code>
+<pre>
+در کد زیر (توابع کنترل موتور فرمان):
+•	steeringStop() هر دو پین جهت فرمان (SM1 و SM2) را LOW می‌کند و PWM روی SMPWM را صفـר می‌گذارد تا موتور فرمان متوقف شود.
+•	steeringRight(pwm) جهت چرخش فرمان به راست و steeringLeft(pwm) جهت چرخش فرمان به چپ را با تنظیم پین‌های SM1/SM2 پیاده‌سازی می‌کنند و مقدار PWM را روی SMPWM قرار می‌دهند.
+•	منطق مشابه توابع پیش‌رانش است ولی برای محور فرمان.
+</pre>
+<code lang="arduino">
+void steeringStop() {
+  digitalWrite(SM1, LOW);
+  digitalWrite(SM2, LOW);
+  analogWrite(SMPWM, 0);  // Ensure the motor got disabled
+}
+
+void steeringRight(unsigned char pwm = 255) {
+  digitalWrite(SM1, HIGH);
+  digitalWrite(SM2, LOW);
+  analogWrite(SMPWM, pwm);
+}
+
+void steeringLeft(unsigned char pwm = 255) {
+  digitalWrite(SM1, LOW);
+  digitalWrite(SM2, HIGH);
+  analogWrite(SMPWM, pwm);
+}
+</code>
+<pre>
+در کد زیر (تابع راه‌اندازی):
+•	پین JOY_BUTTON به عنوان INPUT_PULLUP تنظیم می‌شود (فعال-low با کلید).
+•	پین‌های PM1، PM2، PMPWM، SM1، SM2 و SMPWM به عنوان خروجی (OUTPUT) تنظیم می‌شوند.
+•	سپس توابع propulsionStop() و steeringStop() اجرا می‌شوند تا هر دو موتور در وضعیت ایست قرار بگیرند.
+•	DEBUG_INIT(9600) در صورت فعال بودن دیباگ، سریال و پین‌های دیباگ را راه‌اندازی می‌کند؛ در پیکربندی فعلی (غیرفعال) این ماکرو خالی است.
+</pre>
+<code lang="arduino">
 void setup() {
-  // Initialize serial monitor for debugging.
-  //Serial.begin(9600);
-  
-  // Initialize LED library
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-  FastLED.clear();
-  FastLED.show();
-  
-  // Configure button pins as inputs with internal pull-up resistors.
-  pinMode(BUTTON_GREEN_PIN, INPUT_PULLUP);
-  pinMode(BUTTON_YELLOW_PIN, INPUT_PULLUP);
-  pinMode(BUTTON_RED_PIN, INPUT_PULLUP);
-  pinMode(BUTTON_OFF_PIN, INPUT_PULLUP);
-  
-  // Start with off mode
-  setAllLeds(CRGB::Black);
-}
-</div>
-<p>
-در حلقه‌ی اصلی، هر بار وضعیت چهار دکمه خوانده می‌شود (فعّال وقتی سطح LOW است). با فشردن هر دکمه، تابع handleModeButtonPress با حالت مربوط صدا زده می‌شود و ۲۰۰ میلی‌ثانیه تاخیربرای ضدنوسان (debounce) اعمال می‌شود. بعد از بررسی دکمه‌ها، اگر حالت چشمک‌زن فعال باشد و حالت فعلی MODE_OFF نباشد، updateFlashing() اجرا می‌شود تا وضعیت چشمک را مدیریت کند؛ در غیر این صورت فقط FastLED.show() اجرا می‌شود.
-</p>
-<div class="code">
-void loop() {
-  // Check buttons (active low; adjust if your capacitive setup acts differently)
-  if (digitalRead(BUTTON_GREEN_PIN) == LOW) {
-    handleModeButtonPress(MODE_GREEN);
-    delay(200); // Debounce delay
-  }
-  else if (digitalRead(BUTTON_YELLOW_PIN) == LOW) {
-    handleModeButtonPress(MODE_YELLOW);
-    delay(200);
-  }
-  else if (digitalRead(BUTTON_RED_PIN) == LOW) {
-    handleModeButtonPress(MODE_RED);
-    delay(200);
-  }
-  else if (digitalRead(BUTTON_OFF_PIN) == LOW) {
-    handleModeButtonPress(MODE_OFF);
-    delay(200);
-  }
+  // Configure pins
+  pinMode(JOY_BUTTON, INPUT_PULLUP);
+  pinMode(PM1, OUTPUT);
+  pinMode(PM2, OUTPUT);
+  pinMode(PMPWM, OUTPUT);
 
-  // Update flashing if needed.
-  if (flashing && currentMode != MODE_OFF) {
-    updateFlashing();
-  }
-  else {
-    FastLED.show();
-  }
+  pinMode(SM1, OUTPUT);
+  pinMode(SM2, OUTPUT);
+  pinMode(SMPWM, OUTPUT);
+  
+  // Initialize motors in stop state
+  propulsionStop();
+  steeringStop();
+  
+  // Initialize serial communication for debugging
+  DEBUG_INIT(9600);
 }
-</div>
-<p>
-منطق رفتار هنگام فشردن دکمه:
-•	اگر دکمه‌ی همان حالت فعلی زده شود → حالت چشمک‌زن بین روشن/خاموش تغییر (toggle) می‌شود: اگر قبلاً چشمک نبود، شروع به چشمک می‌کند (و با flashState = true از حالت روشن آغاز می‌کند)، و اگر قبلاً چشمک می‌زد، چشمک را متوقف و رنگ ثابت را نمایش می‌دهد.
-•	اگر دکمه‌ی حالت دیگری زده شود → وضعیت (currentMode) به آن حالت جدید تغییر می‌کند و نمایش بصورت ثابت (غیر چشمک‌زن) روی رنگ مربوطه قرار می‌گیرد.
-نکته‌ریزی: اگر pressedMode == MODE_OFF باشد، colors[MODE_OFF] برابر CRGB::Black است؛ یعنی با زدن دکمه‌ی OFF، همه‌ی LEDها خاموش می‌شوند. همچنین اگر حالت فعلی MODE_OFF باشد و همان دکمه OFF را دوباره بزنید، تابع سعی می‌کند حالت flashing را فعال کند اما در حلقه‌ی اصلی (loop) شرط اجرای updateFlashing() فقط وقتی currentMode != MODE_OFF است اجرا خواهد شد — بنابراین چشمک‌زنی در حالت OFF عملاً اتفاقی نخواهد افتاد (جز اینکه flashing=true شود ولی به‌روزرسانی انجام نشود).
-</p>
-<div class="code">
-void handleModeButtonPress(Modes pressedMode) {
-  if (currentMode == pressedMode) {
-    // The same mode button is pressed.
-    if (!flashing) {
-      // If not already flashing, start flashing.
-      flashing = true;
-      flashState = true; // Start with the color on
-      previousMillis = millis();
-    } else {
-      // If it's already flashing, stop flashing and revert to solid.
-      flashing = false;
-      setAllLeds(colors[pressedMode]);
-    }
+</code>
+<pre>
+در کد زیر (ابتدای حلقه اصلی و کنترل پیشران):
+•	خوانش آنالوگ JOY_Y در yVal و JOY_X در xVal انجام می‌شود.
+•	تابع map(yVal, 0, 1023, 255, -255) مقدار محور Y را به بازه عددی 255 تا −255 نگاشت می‌کند و در عمل محور Y را معکوس می‌سازد (بالا = جلو/پایین = عقب یا بالعکس بسته به مکان فیزیکی جوی‌استیک).
+•	آستانه PROP_MIN برای حذف نویز و منطقه مرده اعمال می‌شود: اگر مقدار مطلقِ propulsionPWM کمتر از PROP_MIN باشد، موتور پیش‌رانش متوقف می‌شود (propulsionStop()).
+•	در صورت بزرگتر بودن propulsionPWM از صفر، حرکت رو به جلو (propulsionForward) با مقدار abs(propulsionPWM) انجام می‌شود؛ در غیر این صورت (propulsionPWM < 0) حرکت عقب (propulsionBackward) انجام می‌گیرد.
+•	ماکروهای DEBUG_PRINT/DEBUG_PRINTLN برای چاپ وضعیتِ حرکت (F= برای Forward، B= برای Backward، PS برای Stop) تعریف شده‌اند اما تنها در صورت فعال بودن ENABLE_DEBUG عمل خواهند کرد.
+</pre>
+<code lang="arduino">
+void loop() {
+  // Read joystick values
+  int yVal = analogRead(JOY_Y);  // Propulsion control
+  int xVal = analogRead(JOY_X);  // Steering control
+  
+  // Propulsion Motor Control (Y-axis)
+  int propulsionPWM = map(yVal, 0, 1023, 255, -255);  // Invert Y-axis
+  
+  // Apply deadzone and direction control
+  if (abs(propulsionPWM) < PROP_MIN) {
+    propulsionStop();
+    DEBUG_PRINTLN("PS");
+  } else if (propulsionPWM > 0) {
+    propulsionForward(abs(propulsionPWM));
+    DEBUG_PRINT("F=");
+    DEBUG_PRINTLN(abs(propulsionPWM));
   } else {
-    // A different color button is pressed: update mode to that color, solid.
-    currentMode = pressedMode;
-    flashing = false;
-    setAllLeds(colors[pressedMode]);
+    propulsionBackward(abs(propulsionPWM));
+    DEBUG_PRINT("B=");
+    DEBUG_PRINTLN(abs(propulsionPWM));
   }
-}
-</div>
-<p>
-این تابع با استفاده از millis() و previousMillis هر flashInterval میلی‌ثانیه (500ms) وضعیت flashState را معکوس می‌کند و بسته به آن یا رنگ حالت را نمایش می‌دهد یا همه را خاموش می‌کند — یعنی مسئول چشمک‌زدن است.
-</p>
-<div class="code">
-// updateFlashing: toggle between the mode color and off.
-void updateFlashing() {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= flashInterval) {
-    previousMillis = currentMillis;
-    flashState = !flashState;
-    if (flashState) {
-      setAllLeds(colors[currentMode]);
-    } else {
-      setAllLeds(CRGB::Black);
-    }
+</code>
+<pre>
+در کد زیر (کنترل فرمان و اتمام حلقه):
+•	متغیر deltaX برابر اختلاف مقدار فعلی xVal و مقدار قبلی prevX است؛ سپس prevX به xVal به‌روزرسانی می‌شود. بنابراین فرمان بر اساس مشتق (تغییر لحظه‌ای) محور X عمل می‌کند نه مقدار مطلقِ محور X.
+•	مقدار steeringPWM با فرمول abs(deltaX) * 0.25 از تغییر X مقیاس داده می‌شود تا مقدار PWM مناسب به‌دست آید. سپس constrain(..., 0, STEER_MAX) مقدار را در بازه مجاز محدود می‌کند.
+•	آستانه STEER_MIN برای حذف فرمان‌های بسیار کوچک اعمال می‌شود؛ اگر steeringPWM < STEER_MIN، سیستم فرمان را با steeringStop() متوقف می‌کند.
+•	در صورتی که deltaX > 0 (یعنی تغییر X به سمت مثبت) تابع steeringRight(steeringPWM) اجرا می‌شود؛ در غیر این صورت steeringLeft(steeringPWM) اجرا می‌شود.
+•	حلقه در پایان delay(20) میلی‌ثانیه دارد که برای پایدارسازی خوانش‌ها قرار داده شده است.
+</pre>
+<code lang="arduino">
+  // Steering Motor Control (X-axis derivative)
+  int deltaX = xVal - prevX;  // Calculate position change
+  prevX = xVal;  // Store current position
+  
+  int steeringPWM = abs(deltaX) * 0.25;  // Scale derivative to PWM
+  steeringPWM = constrain(steeringPWM, 0, STEER_MAX);  // Limit PWM range
+  
+  // Apply steering deadzone and direction
+  if (steeringPWM < STEER_MIN) {
+    steeringStop();
+    DEBUG_PRINTLN("SS");
+  } else if (deltaX > 0) {
+    steeringRight(steeringPWM);
+    DEBUG_PRINT("R=");
+    DEBUG_PRINTLN(steeringPWM);
+  } else {
+    steeringLeft(steeringPWM);
+    DEBUG_PRINT("L=");
+    DEBUG_PRINTLN(steeringPWM);
   }
+  
+  // Small delay to stabilize readings
+  delay(20);
 }
-</div>
-<p>
-یک تابع کمکی ساده که همه‌ی LEDها را به یک رنگ مشخص تنظیم کرده و سپس خروجی را با FastLED.show() می‌فرستد.
-</p>
-<div class="code">
-// ---------------------------------------------------------------
-// setAllLeds: Sets all LEDs in the matrix to the specified color.
-void setAllLeds(const CRGB &color) {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = color;
-  }
-  FastLED.show();
-}
-</div>
+</code>
 <h4>
 توضیح سیم‌بندی و بستن مدار آزمایش
 </h4>
-<p>
-</p>
+<pre>
+</pre>

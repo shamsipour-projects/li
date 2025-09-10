@@ -5,13 +5,24 @@
 <meta charset="UTF-8">
 <meta name="author" content="M. MAD">
 <link rel="icon" type="image/png" href="../../favicon.png">
-<link rel="stylesheet" href="../scientists_style.css">
+<link rel="stylesheet" href="../base-style.css">
+<link rel="stylesheet" href="../l-style.css">
 <link rel="stylesheet" href="../fonts.css">
 </head>
 <body dir="rtl" align="right">
-<h1 class="scientist-heading scientist-text-heading">{{header}}</h1>
-<div class="scientist-pic-div scientist-heading">
-<img class="scientist-pic" src="{{pic}}">
+<header>
+<h1 class="main-heading main-heading">{{header}}</h1>
+<nav>
+  <a href="/index.html">🏘 پروژه‌ها</a> &gt
+  <a href="/l/index.html">🏫 آزمایشگاه‌ها</a> &gt
+  <a href="../../index.html">🌍 آزمایشگاه اینترنت اشیاء</a> &gt
+  <a href="index.html">📚 یادگیری</a> &gt
+  <a href="#">📚 {{header}}</a>
+</nav>
+</header>
+<article>
+<div class="main-img-div main-heading">
+<img class="main-img" src="{{pic}}">
 </div>
 <table>
   <tr>
@@ -34,9 +45,10 @@
     <td colspan="2"><b class="table-pseudo-heading">برچسب‌ها:</b><br>{{tags}}</td>
   </tr>
 </table>
-<div class="fa-IR-explanation">
-<h2 class="fa-IR-explanation-header">توضیحات</h2>
+<div class="main-text">
+<h2 class="main-text-heading">توضیحات</h2>
 {{_content}}
 </div>
+</article>
 </body>
 </html>

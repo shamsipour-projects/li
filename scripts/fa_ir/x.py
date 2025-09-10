@@ -147,6 +147,6 @@ def html_data_extractor(dirpath: str, f: str, markdownify: bool = False) -> Expe
         pic=soup.img["src"],
         table=escapeless_soup_table_extractor(soup),
         bio=str(
-            soup.body.find("div", {"class": "fa-IR-explanation"})
-        ).lstrip('<div class="fa-IR-explanation">').rstrip('</div>')
+            soup.body.find("div", {"class": "main-text"})
+        ).lstrip('<div class="main-text">').rstrip('</div>')
     )

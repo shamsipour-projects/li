@@ -4,35 +4,56 @@ body {
     margin-left: 8%;
 }
 
-.persian-text {
-    font-size: 1.7vmax;
+.fa {
+    /* font-size: 1.7vmax; */
     font-family: BNazanin;
     font-display: swap;
 }
 
-.english-text {
-    font-size: 1.5vmax;
-    font-family: 'Times New Roman', Times, serif;
-    font-display: swap;
-}
-
-.part-heading {
-    text-align: center;
-    font-family: 'Times New Roman', Times, serif;
-    font-display: swap;
-}
-
-.persian-heading {
+.fa-heading {
     font-family: BTitr;
     font-display: swap;
 }
 
-.part-text-heading {
-    min-height: 4vh;
-    font-size: 3.5vmax;  /* a magic number for heading */
+.en {
+    /* English texts will be always 0.2vmax smaller than the surrounding texts */
+    font-size: calc(1em - 0.2vmax);
+    font-family: 'Times New Roman', Times, serif;
+    font-display: swap;
 }
 
-.part-pic {
+.main-heading {
+    text-align: center;
+    min-height: 4vh;
+    font-size: 8.5vmax;
+    /* font-size: 3.5vmax; */  /* a magic number for heading */
+}
+
+h1 {
+    font-size: 7.5vmax;
+}
+
+h2 {
+    font-size: 6.5vmax;
+}
+
+h3 {
+    font-size: 5.5vmax;
+}
+
+h4 {
+    font-size: 4.5vmax;
+}
+
+h5 {
+    font-size: 3.5vmax;
+}
+
+h6 {
+    font-size: 2.5vmax;
+}
+
+.main-img {
     border-radius: 30px;
     /* min-height: 36vh; */  /* experimental code added here to comply with
                                 the original master PDF (choke_987) but it
@@ -52,36 +73,21 @@ table {
     font-family: BNazanin;
     font-display: swap;
 }
-  
-td, th {
-    border: 1px solid #ffd966;
-    padding: 8px;
-    width: 50%;
-}
-
-tr:nth-child(even) {
-    background-color: #fff2cc;
-}
 
 .table-pseudo-heading {
     font-family: BTitr;
     font-display: swap;
 }
 
-/* tr {
-    border: 3px solid black;
-    border-collapse: collapse;
-} */
-
-.fa-IR-explanation {
+.main-text {
     font-family: BNazanin;
     font-size: 1.7vmax;  /* same magic number from table */
     text-align: justify;
     font-display: swap;
 }
 
-.fa-IR-explanation-header{
+.main-text-heading{
     font-family: BTitr;
-    font-size: 2.1vmax;  /* just a magic number bigger than normal explanation text and smaller than part-text-heading */
+    font-size: 2.1vmax;  /* just a magic number bigger than normal explanation text and smaller than main-heading */
     font-display: swap;
 }

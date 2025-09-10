@@ -124,9 +124,9 @@ def html_data_extractor(dirpath: str, f: str, markdownify: bool = False) -> Pane
     path = osp.join(dirpath, f)
     f_text = b.file_reader(path)
     soup = BeautifulSoup(f_text, "html.parser")
-    # ep = [p.text for p in e.find_all("p") for e in soup.body.find_all("div", {"class": "fa-IR-explanation"})]
+    # ep = [p.text for p in e.find_all("p") for e in soup.body.find_all("div", {"class": "main-text"})]
     # ep = []
-    # for e in soup.body.find_all("div", {"class": "fa-IR-explanation"}):
+    # for e in soup.body.find_all("div", {"class": "main-text"}):
     #     for p in e.find_all("p"):
     #         # print(md(str(p)))
     #         ep.append(md(str(p)) if markdownify else p.text)
@@ -136,6 +136,6 @@ def html_data_extractor(dirpath: str, f: str, markdownify: bool = False) -> Pane
         pic=soup.img["src"],
         table=escapeless_soup_table_extractor(soup),
         explanation_paragraphs=str(
-            soup.body.find("div", {"class": "fa-IR-explanation"})
-        ).lstrip('<div class="fa-IR-explanation">').rstrip('</div>')
+            soup.body.find("div", {"class": "main-text"})
+        ).lstrip('<div class="main-text">').rstrip('</div>')
     )

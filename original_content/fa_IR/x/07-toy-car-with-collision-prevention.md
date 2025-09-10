@@ -1,0 +1,375 @@
+---
+title: "Experiment 07: Toy car with collision prevention"
+header: "Experiment 07: Toy car with collision prevention"
+author: M. MAD
+pic: img/07-toy-car-with-collision-prevention.png
+name: "آزمایش 07: پیاده‌سازی نمونه ساده خودروی هوشمند با سامانه پیشگیری از تصادف"
+manufacturing_date: 2025
+category: آزمایش
+manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
+manufacturer_country: ایران
+goals:
+  - >
+    خوانش ورودی‌های آنالوگ و دیجیتال از
+    <span class="en">Joystick</span>
+  - >
+    راه‌اندازی و ارسال فرامین و پالس‌های
+    <span class="en">PWM</span>
+    به درایور موتور
+    <span class="en">L298N</span>
+    (پل
+    <span class="en">H</span>)
+  - کنترل همزمان دو موتور الکتریکی با دو روش متفاوت
+  - >
+    تشخیص رنگ با حسگر
+    <span class="en">TCS3200</span>
+    و احترام به چراغ راهنمایی
+  - >
+    فاصله‌سنجی همزمان در چند طرف با استفاده از انواع حسگرهای فاصله‌سنج فراصوتی
+    (<span class="en">HC-SR04</span>)
+    و لیزری
+    (<span class="en">GY-530</span>)
+  - >
+    راه‌اندازی و ارتباط با نمایشگرهای
+    <span class="en">MAX7219</span>
+    (نمایشگر
+    <span class="en">LED</span>
+    تک‌رنگ ماتریس نقطه 8x8 با رابط کاربری شبه
+    <span class="en">SPI</span>)
+    و
+    <span class="en">SSD1331</span>
+    (نمایشگر ماتریس نقطه 96x64 با رابط
+    <span class="en">SPI</span>)
+ingredients:
+  - یک دستگاه رایانه
+  - >
+    <a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a>
+    (برای پیاده‌سازی چراغ راهنمایی با
+    <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>)
+    و
+    <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a>
+    (برای پیاده‌سازی پروژه اصلی با
+    <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
+  - >
+    کابل تبدیل
+    <span class="en">USB Type-B</span>
+    (پورت
+    <span class="en">USB</span>
+    روی بردهای توسعه آردوینو) به
+    <span class="en">USB Type-A</span>
+    (پورت
+    <span class="en">USB</span>
+    مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+  - >
+    <a href="../h/p/04-sonsors-II.html">تابلوی حسگرهای دوم</a>
+    (برای ماژول
+    <span class="en">Joystick</span>
+    و حسگر
+    <span class="en">TCS3200</span>)
+  - >
+    <a href="../h/p/05-sensors-III.html">تابلوی حسگرهای سوم</a>
+    (برای موتور و درایور موتور
+    <span class="en">L298N</span>)
+  - >
+    <a href="../h/p/06-sensors-IV.html">تابلوی حسگرهای چهارم</a>
+    (برای حسگرهای فاصله‌سنج فراصوتی
+    (<span class="en">HC-SR04</span>)
+    و لیزری
+    (<span class="en">GY-530</span>))
+  - >
+    <a href="../h/p/07-displays.html">تابلوی نمایشگرها</a>
+    (برای نمایشگر
+    <span class="en">LED</span>
+    تک‌رنگ ماتریس نقطه 8x8
+    (<span class="en">MAX7219</span>)
+    و نمایشگر
+    <span class="en">OLED</span>
+    ماتریس نقطه 96x64
+    (<span class="en">SSD1331</span>))
+---
+<p>
+کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند. در ادامه، کد
+این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
+</p>
+<h4>
+توضیح کد آزمایش
+</h4>
+<pre>
+در کد زیر (سربرگ‌ها و کلان‌دستورهای دیباگ):
+•	کتابخانه‌های Adafruit_SSD1306 برای OLED و LedControl برای درایور MAX7219 فراخوانی شده‌اند. VL53L0X برای سنسور فاصله GY-530 به کار رفته است.
+•	ماکروی ENABLE_DEBUG غیرفعال است (۰). وقتی ENABLE_DEBUG برابر ۱ شود، DEBUG_SETUP(baud) پین DEBUG_PIN را با INPUT_PULLUP تنظیم و سریال را شروع می‌کند. ماکروی DEBUG(x) تنها وقتی اجرا می‌شود که DEBUG_PIN فعال (LOW) باشد و در حین اجرای x LED داخلی چشمک بزند.
+</pre>
+<code lang="arduino">
+#include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <LedControl.h>
+#include <VL53L0X.h>  // For GY-530
+
+#define ENABLE_DEBUG 0
+#if ENABLE_DEBUG
+  #define DEBUG_PIN 12
+  #define DEBUG_LED LED_BUILTIN
+  #define DEBUG_SETUP(baud) do { \
+    pinMode(DEBUG_PIN, INPUT_PULLUP); \
+    pinMode(DEBUG_LED, OUTPUT); \
+    Serial.begin(baud); \
+  } while(0)
+
+  #define DEBUG_PRINT(x) do {Serial.print(x); Serial.flush();} while(0)
+  #define DEBUG_PRINTLN(x) do {Serial.println(x); Serial.flush();} while(0)
+  #define DEBUG_FLUSH() Serial.flush()
+  #define DEBUG(x) do { \
+    if (!digitalRead(DEBUG_PIN)) { \
+      digitalWrite(DEBUG_LED, HIGH); \
+      x; \
+      Serial.flush(); \
+      digitalWrite(DEBUG_LED, LOW); \
+    } \
+  } while(0)
+#else
+  #define DEBUG_SETUP(baud)
+  #define DEBUG_PRINT(x)
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_FLUSH()
+  #define DEBUG(x)
+#endif
+</code>
+<pre>
+در کد زیر، Colors یک scoped enum با اندازه‌ی یک بایت است که در توابع سنسور رنگ برای انتخاب فیلتر (RED/GREEN/BLUE) استفاده می‌شود.
+</pre>
+<code lang="arduino">
+enum class Colors : unsigned char { RED, GREEN, BLUE };
+</code>
+<pre>
+کد زیر هم تعریف ثابت‌ها و آستانه‌هاست.
+</pre>
+<code lang="arduino">
+#define DEBOUNCE_DELAY 20  // Small delay to stabilize readings
+// Obstacle thresholds (cm)
+#define FRONT_STOP_DIST 20
+#define REAR_STOP_DIST 30
+</code>
+<pre>
+در کد زیر،•  lockCheck() هنگام تشخیص لبه‌ی فعال (خوانش HIGH همراه با debounce) وضعیت isCarLocked را toggle می‌کند، نمایشگر OLED را به‌روز (updateOLED())، و در حالت قفل، موتورها را با propulsionStop() و steeringStop() متوقف می‌کند.
+</pre>
+<code lang="arduino">
+#define LOCK_BUTTON 30
+
+bool isCarLocked = true;
+unsigned long lastLockPress = 0;
+
+void lockSetup() {
+  pinMode(LOCK_BUTTON, INPUT);
+}
+
+bool lockCheck() {
+  if (digitalRead(LOCK_BUTTON) && millis() – lastLockPress > DEBOUNCE_DELAY) {
+    isCarLocked = !isCarLocked;
+    lastLockPress = millis();
+    updateOLED();
+    DEBUG_PRINT(“isCarLocked = “);
+    DEBUG_PRINTLN(isCarLocked);
+
+    if (isCarLocked) {
+      propulsionStop();
+      steeringStop();
+    }
+  }
+  return isCarLocked;
+}
+</code>
+<pre>
+در کد زیر (جوی‌استیک):
+•  readJoyStick() مقادیر آنالوگ محور Y و X را خوانده و سپس updateMatrixDisplay(xVal, yVal) را برای نمایش مختصات روی ماتریس 8×8 فراخوانی می‌کند.
+•  JOY_BUTTON روی پین 2 با INPUT_PULLUP پیکربندی شده است (فشردن کلید سطح LOW تولید می‌کند).
+</pre>
+<code lang="arduino">
+#define JOY_Y A0
+#define JOY_X A1
+#define JOY_BUTTON 2
+
+int yVal = 512;
+int xVal = 512;
+int prevX = 512;
+
+void joySetup() {
+  pinMode(JOY_BUTTON, INPUT_PULLUP);
+}
+
+void readJoyStick() {
+  yVal = analogRead(JOY_Y);
+  xVal = analogRead(JOY_X);
+  updateMatrixDisplay(xVal, yVal);
+}
+</code>
+<pre>
+در کد زیر (حسگر رنگ):
+1.	readColor() از pulseIn(OUT, LOW) استفاده می‌کند؛ pulseIn() مسدودکننده است و تا timeout صبر می‌کند — اگر نور ضعیف باشد یا پالس نیاید، اجرای برنامه کند می‌شود. پیشنهاد: استفاده از timeout کوتاه (pulseIn(OUT, LOW, timeout)) یا اندازه‌گیری غیرمسدود با وقفه/کانتر سخت‌افزاری در صورت امکان.
+2.	ترکیب خواندن قرمز و خواندن سبز در checkRedLight() و قاعده (red < RED_THRESHOLD) && (red < green * 0.7) منطقی است ولی آستانه‌ها (RED_THRESHOLD و GREEN_THRESHOLD) نیاز به کالیبراسیون در محیط دارند.
+</pre>
+<code lang="arduino">
+#define S0 2
+#define S1 3
+#define S2 4
+#define S3 5
+#define OUT 11
+...
+int readColor(Colors color) {
+  switch(color) {
+    case Colors::RED:
+      digitalWrite(S2, LOW);
+      digitalWrite(S3, LOW);
+      break;
+    ...
+  }
+  return pulseIn(OUT, LOW);
+}
+</code>
+<pre>
+در کد زیر (حسگر فاصله جلو):
+•	تابع fontDistanceSetup() احتمالاً نام اشتباه دارد و منظور frontDistanceSetup() بوده؛ با این حال نام داخل setup() همان fontDistanceSetup() فراخوان شده و کار می‌کند اما بهتر است نام به frontDistanceSetup() اصلاح شود تا مفهوم واضح شود.
+•	getFrontDistance() با ارسال پالس تریگر و خواندن pulseIn(FRONT_ECHO, HIGH) فاصله را محاسبه می‌کند. pulseIn() مسدودکننده است — اگر اکو نیاید ممکن است برنامه تأخیر داشته باشد.
+•	frontCheck() از مقدار FRONT_STOP_DIST (پس از اصلاح define) برای تصمیم توقف استفاده می‌کند.
+</pre>
+<code lang="arduino">
+#define FRONT_TRIG 27
+#define FRONT_ECHO 28
+...
+void fontDistanceSetup() {
+  pinMode(FRONT_TRIG, OUTPUT);
+  pinMode(FRONT_ECHO, INPUT);
+}
+
+float getFrontDistance() {
+  digitalWrite(FRONT_TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(FRONT_TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(FRONT_TRIG, LOW);
+  
+  long duration = pulseIn(FRONT_ECHO, HIGH);
+  return duration * 0.034 / 2; // cm
+}
+</code>
+<pre>
+در کد زیر (حسگر فاصله عقب):
+•	rearDistanceSetup() مقدار timeout را تنظیم و سپس rearSensor.init() را فراخوانی می‌کند؛ اگر init() ناموفق باشد پیام دیباگ چاپ می‌شود.
+•	getRearDistance() مقدار میلی‌متری را خوانده و تقسیم بر 10 می‌کند تا بر حسب سانتی‌متر برگرداند.
+•	پیشنهاد: فراخوان صریح Wire.begin() در setup() پیش از rearDistanceSetup() برای اطمینان از راه‌اندازی I²C (گرچه display.begin() ممکن است Wire را راه‌اندازی کند، ولی بهتر است صریحاً Wire.begin() بنویسید).
+•	بررسی خطا: پس از خواندن readRangeSingleMillimeters() باید rearSensor.timeoutOccurred() بررسی شود تا مشخص شود خوانش معتبر است یا خطا رخ داده.
+</pre>
+<code lang="arduino">
+VL53L0X rearSensor;
+...
+void rearDistanceSetup() {
+  rearSensor.setTimeout(500);
+  if (!rearSensor.init()) {
+    DEBUG_PRINTLN(“Failed to detect and initialize the rearSensor (GY530)!”);
+  }
+}
+ 
+float getRearDistance() {
+  return rearSensor.readRangeSingleMillimeters() / 10.0; // mm to cm
+}
+</code>
+<pre>
+در کد زیر (ماتریس 8×8):
+•	پارامترهای MATRIX_DIN, MATRIX_CLK, MATRIX_CS برای ارتباط با درایور MAX7219 روی پین‌های SPI برد Mega (51/52/53) مناسب است.
+•	updateMatrixDisplay() موقعیت جوی‌استیک را به یک LED روی صفحه‌ی 8×8 نگاشت می‌کند و برای بازخورد بصری کاربر از آن استفاده می‌شود.
+</pre>
+<code lang="arduino">
+#define MATRIX_DIN 51
+#define MATRIX_CS 52
+#define MATRIX_CLK 53
+
+LedControl lc = LedControl(MATRIX_DIN, MATRIX_CLK, MATRIX_CS, 1);
+
+void matrixDisplaySetup() {
+  lc.shutdown(0, false);
+  lc.setIntensity(0, 8);
+  lc.clearDisplay(0);
+}
+
+void updateMatrixDisplay(int x, int y) {
+  lc.clearDisplay(0);
+  int ledX = map(x, 0, 1023, 0, 7);
+  int ledY = map(y, 0, 1023, 7, 0); // Invert Y axis
+  lc.setLed(0, ledY, ledX, true);
+}
+</code>
+<pre>
+در کد زیر (نمادها و نمایشگر OLED):
+•	OLEDSetup() فراخوان display.begin(...) دارد؛ اگر display.begin شکست بخورد حلقه‌ی while(1); برنامه را متوقف می‌کند — پیشنهاد: جایگزینی با پیام خطا روی سریال یا fallback منطقی بهتر است.
+•	updateOLED() چندین تابع مسدودکننده را فراخوانی می‌کند: getFrontDistance() (که داخلش pulseIn) و getRearDistance() (که خوانش VL53L0X است) و checkRedLight() (که خودش از pulseIn برای TCS3200 استفاده می‌کند). اجرای هم‌زمانِ سه فراخوانِ مسدودکننده ممکن است باعث کندی قابل توجه در به‌روزرسانی‌ و پاسخ‌دهی شود.
+</pre>
+<code lang="arduino">
+Adafruit_SSD1306 display(128, 64, &Wire, OLED_RESET);
+
+void OLEDSetup() { ... }
+
+void updateOLED() {
+  display.clearDisplay();
+  display.drawBitmap(0, 0, isCarLocked ? lockIcon : unlockIcon, 16, 16, SSD1306_WHITE);
+  float frontDist = getFrontDistance();
+  display.drawBitmap(0, 20, frontSensorIcon, 16, 16, SSD1306_WHITE);
+  display.setCursor(20,25); display.print("F: "); display.print(frontDist); display.print("cm");
+  float rearDist = getRearDistance();
+  ...
+  bool redLight = checkRedLight();
+  display.drawBitmap(90, 20, redLight ? trafficRedIcon : trafficGreenIcon, 16, 16, SSD1306_WHITE);
+  display.setCursor(110, 25);
+  display.print(redLight ? "STOP" : "GO");
+  // direction indicator
+  int joyY = analogRead(JOY_Y);
+  ...
+  display.drawLine(0, 18, 128, 18, SSD1306_WHITE);
+  display.display();
+}
+</code>
+<pre>
+دو بخش کنترل موتورهای پیشران و فرمان قبلا دو بار توضیح داده شده‌اند و در اینجا از آنها صرف نظر می‌کنیم.
+</pre>
+<pre>
+در کد زیر (تابع‌های راه‌اندازی و حلقه):
+•	setup() پیکربندی سخت‌افزاری و راه‌اندازی نمایشگر انجام می‌دهد. توجه: ترتیب فراخوان‌ها محتمل است ولی بهتر است Wire.begin() قبل از OLEDSetup() و rearDistanceSetup() صریحاً فراخوانده شود.
+•	در حلقه‌ی اصلی ابتدا وضعیت جوی‌استیک خوانده می‌شود و ماتریس به‌روزرسانی می‌گردد، سپس اگر خودرو در حالت قفل (isCarLocked==true) باشد با return از loop() خارج می‌شود (پس سایر بررسی‌ها اجرا نمی‌شوند). در غیر این صورت سنسور رنگ، سنسور جلو و سنسور عقب چک شده، سپس فرمان‌ها به موتورها ارسال می‌شوند.
+</pre>
+<code lang="arduino">
+void setup() {
+  lockSetup();
+  joySetup();
+
+  propulsionMotorSetup();
+  steeringMotorSetup();
+
+  colorSensorSetup();
+  fontDistanceSetup();
+  rearDistanceSetup();
+
+  matrixDisplaySetup();
+  OLEDSetup();
+
+  DEBUG_SETUP(9600);
+}
+
+void loop() {
+  readJoyStick();
+
+  if (lockCheck()) return;
+
+  colorCheck();
+  frontCheck();
+  rearCheck();
+
+  handlePropulsion();
+  handleSteering();
+
+  delay(DEBOUNCE_DELAY);
+}
+</code>
+<h4>
+توضیح سیم‌بندی و بستن مدار آزمایش
+</h4>
+<pre>
+</pre>

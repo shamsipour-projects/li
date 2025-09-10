@@ -5,54 +5,44 @@
 <meta charset="UTF-8">
 <meta name="author" content="M. MAD">
 <link rel="icon" type="image/png" href="../../favicon.png">
-<link rel="stylesheet" href="../scientists_style.css">
+<link rel="stylesheet" href="../base-style.css">
+<link rel="stylesheet" href="../x-style.css">
 <link rel="stylesheet" href="../fonts.css">
 </head>
 <body dir="rtl" align="right">
-<h1 class="scientist-heading scientist-text-heading">Experiment 00: Blink</h1>
-<div class="scientist-pic-div scientist-heading">
-<img class="scientist-pic" src="img/p/07-displays.png">
+<header>
+<h1 class="main-heading main-heading">Experiment 00: Blink</h1>
+<nav>
+  <a href="/index.html">🏘 پروژه‌ها</a> &gt
+  <a href="/l/index.html">🏫 آزمایشگاه‌ها</a> &gt
+  <a href="../../index.html">🌍 آزمایشگاه اینترنت اشیاء</a> &gt
+  <a href="index.html">🔬 آزمایش‌ها</a> &gt
+  <a href="#">🔬 Experiment 00: Blink</a>
+</nav>
+</header>
+<article>
+<div class="main-img-div main-heading">
+<img class="main-img" src="img/00-blink.png">
 </div>
-<table>
-  <tr>
-    <td><b class="table-pseudo-heading">نام:</b><br>آزمایش 00: راه‌اندازی‌های اولیه و تست ماژول‌های آردوینو</td>
-    <td><b class="table-pseudo-heading">زاده:</b><br></td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">درگذشت:</b><br></td>
-    <td><b class="table-pseudo-heading">جنسیت:</b><br>زن</td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">ملیت:</b><br></td>
-    <td><b class="table-pseudo-heading">محل تحصیل:</b><br></td>
-  </tr>
-  <tr>
-    <td><b class="table-pseudo-heading">شناخته‌شده برای:</b><br></td>
-    <td><b class="table-pseudo-heading">جایزه‌ها:</b><br></td>
-  </tr>
-  <tr>
-    <td colspan="2"><b class="table-pseudo-heading">برچسب‌ها:</b><br></td>
-  </tr>
-</table>
-<div class="fa-IR-explanation">
-<h3 class="fa-IR-explanation-header">اهداف آزمایش</h3>
+<div class="main-text">
+<h3 class="fa-heading">اهداف آزمایش</h3>
 <ul>
   
     <li>مروری بر اصول و اسلوب برنامه‌نویسی سامانه‌های نهفته و خانواده بردهای توسعه آردوینو</li>
   
-    <li>معرفی و کار با نرم‌افزار <span class="english-text">Arduino IDE</span>
+    <li>معرفی و کار با نرم‌افزار <span class="en">Arduino IDE</span>
 </li>
   
-    <li>شبیه‌سازی آزمایش‌ها و پروژه‌های مبتنی‌بر خانواده بردهای توسعه آردوینو با استفاده از نرم‌افزار <span class="english-text">Proteus</span>
+    <li>شبیه‌سازی آزمایش‌ها و پروژه‌های مبتنی‌بر خانواده بردهای توسعه آردوینو با استفاده از نرم‌افزار <span class="en">Proteus</span>
 </li>
   
     <li>کار با خروجی‌های دیجیتال</li>
   
-    <li>یادگیری زمان‌بندی انسدادی <span class="english-text">Blocking Timing</span>
+    <li>یادگیری زمان‌بندی انسدادی <span class="en">Blocking Timing</span>
 </li>
   
 </ul>
-<h3 class="fa-IR-explanation-header">پیش‌نیازها</h3>
+<h3 class="fa-heading">پیش‌نیازها</h3>
 <p>
 برای کسب اطلاعات درباره ریزپردازنده، ریزمهارگر، بردهای توسعه به پیوست 1 مراجعه
 کنید.
@@ -64,15 +54,15 @@
 <p>
 کد کامل این آزمایش و آزمایش‌های دیگر نیز همگی در پیوست 4 آمده‌اند (البته کد این
 آزمایش استثنائا از طریق کنش
-«Blink»
+«<span class="en">Blink</span>»
 زیرمنوی
-«01.Basics»
+«<span class="en">01.Basics</span>»
 در «مثال‌ها
-(Examples)»
+(<span class="en">Examples</span>)»
 در منوی «پرونده
-(File)»
+(<span class="en">File</span>)»
 در نرم‌افزار
-Arduino IDE
+<span class="en">Arduino IDE</span>
 نیز در دسترس است). در ادامه، کد این آزمایش به صورت تکه تکه توضیح داده خواهد شد.
 
 </p>
@@ -87,18 +77,18 @@ Arduino IDE
 ضروری نیستند) و تعریف متغیرهای جهانی و توابع دیگر گذر کنیم و مستقیما به جایی که
 اجرای کد ما از آنها آغاز می‌شود برویم؛ یعنی تابع «راه‌اندازی آغازین (setup)» و
 پس از آن هم تابع «حلقه اصلی
-(loop)».
+(<var class="v-func">loop</var>)».
 شایان ذکر است که برای اطلاعات بیشتر درباره موارد استفاده‌شده در کد (توابع
-«pinMode»،
-«digitalWrite»
+«<var class="v-func">pinMode</var>»،
+«<var class="v-func">digitalWrite</var>»
 و
-«delay»
+«<var class="v-func">delay</var>»
 و ثابت‌های
-«LED_BUILTIN»،
-«OUTPUT»،
-«HIGH»
+«<var class="v-const">LED_BUILTIN</var>»،
+«<var class="v-const">OUTPUT</var>»،
+«<var class="v-const">HIGH</var>»
 و
-«LOW»)
+«<var class="v-const">LOW</var>»)
 می‌توانید به پیوست 6 مراجعه کنید.
 </p>
 <h5>
@@ -107,52 +97,52 @@ Arduino IDE
 <p>
 تکه کد مربوط به تابع راه‌اندازی آغازین در ادامه آورده شده است:
 </p>
-<div class="code">
+<code lang="arduino">
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
 }
-</div>
+</code>
 <p>
 اگر باز هم در اینجا از نظرات صرف نظر کنیم، کد این تابع عملا دو خط است، در خط
 یکم آن (خط دوم کد)، تابعی بدون خروجی (از نوع
-«void»)
+«<var class="v-type">void</var>»)
 به نام
-«setup»
+«<var class="v-func">setup</var>»
 اعلان و مقداردهی اولیه شده که بلوک حکم‌های آن تنها دربردارنده یک حکم می‌شود،
 فراخوانی تابع
-«pinMode»
+«<var class="v-func">pinMode</var>»
 با مقادیر ثابت‌های
-«LED_BUILTIN»
+«<var class="v-const">LED_BUILTIN</var>»
 و
-«OUTPUT»
+«<var class="v-const">OUTPUT</var>»
 به‌ترتیب به‌عنوان آرگومان‌های یکم و دوم آن.
 </p>
 <p>
 تابع
-«pinMode»
+«<var class="v-func">pinMode</var>»
 پین مورد نظر را در قالب یک عدد صحیح بی‌علامت 8 بیتی (نوع
-«unsigned char»)
+«<var class="v-type">unsigned char</var>»)
 به‌عنوان آرگومان یکم (ثابت
-«LED_BUILTIN»
+«<var class="v-const">LED_BUILTIN</var>»
 با مقدار «13» در صورت گزینش برد توسعه «آردوینو اونو
-(Arduino Uno)»
+(<span class="en">Arduino Uno</span>)»
 و «آردوینو مگا
-(Arduino Mega)»
+(<span class="en">Arduino Mega</span>)»
 در زیرمنوی «برد
-(Board)»
+(<span class="en">Board</span>)»
 در منوی «ابزارها
-(Tools)»
+(<span class="en">Tools</span>)»
 در بخش منوهای نرم‌افزار
-Arduino IDE،
+<span class="en">Arduino IDE</span>،
 این مقدار می‌تواند در صورت گزینش بردهای دیگر تغییر کند) و حالت مطلوب را باز هم
 در قالب یک عدد صحیح بی‌علامت 8 بیتی (نوع
-«unsigned char»)
+«<var class="v-type">unsigned char</var>»)
 به‌عنوان آرگومان دوم (ثابت
-«OUTPUT»
+«<var class="v-const">OUTPUT</var>»
 با مقدار
-«0x01»)
+«<var class="v-literal v-num v-int v-hexnum">0x01</var>»)
 می‌گیرد و حالت داده‌شده را روی پین مورد نظر اعمال می‌کند.
 </p>
 <h5>
@@ -161,7 +151,7 @@ Arduino IDE،
 <p>
 تکه کد مربوط به تابع حلقه اصلی نیز در ادامه آورده شده است:
 </p>
-<div class="code">
+<code lang="arduino">
 // the loop function runs over and over again forever
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on
@@ -169,58 +159,58 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
   delay(1000);                      // wait for a second
 }
-</div>
+</code>
 <p>
 در اینجا هم تابعی بدون خروجی (از نوع
-«void»)
+«<var class="v-type">void</var>»)
 به نام
-«loop»
+«<var class="v-func">loop</var>»
 در خط 2 (خط 8 کد) اعلان و مقداردهی اولیه شده که بلوک حکم‌های آن دربردارنده 4
 حکم است، فراخوانی تابع
-«digitalWrite»،
+«<var class="v-func">digitalWrite</var>»،
 سپس فراخوانی تابع
-«delay»
+«<var class="v-func">delay</var>»
 و دوباره همین روال ولی آرگومان دوم فراخوانی تابع
-«digitalWrite»
+«<var class="v-func">digitalWrite</var>»
 این بار تغییر کرده است.
 </p>
 <p>
 تابع
-«digitalWrite»
+«<var class="v-func">digitalWrite</var>»
 پین مورد نظر را به‌عنوان آرگومان یکم و حالت منطقی (دیجیتال) مطلوب را به‌عنوان
 آرگومان دوم خود می‌گیرد و حالت منطقی مطلوب را روی پین مورد نظر اعمال می‌کند.
 </p>
 <p>
 تابع
-«delay»
+«<var class="v-func">delay</var>»
 یک مقدار عدد صحیح بی‌علامت طولانی (نوع
-«unsigned long»)
+«<var class="v-type">unsigned long</var>»)
 به‌عنوان تنها آرگومان خود می‌گیرد و ریزمهارگر را برای همان مقدار زمان (به واحد
 میلی ثانیه) معطل می‌کند، به عبارت دیگر ریزمهارگر از زمان فراخوانی این تابع تا
 پایان مدت زمان تعیین‌شده هیچ کاری انجام نمی‌دهد.
 </p>
 <p>
 در اینجا ابتدا با استفاده از تابع
-«digitalWrite»،
+«<var class="v-func">digitalWrite</var>»،
 پین
-«LED_BUILTIN»
+«<var class="v-const">LED_BUILTIN</var>»
 در حالت
-«HIGH»
+«<var class="v-const">HIGH</var>»
 («یک» منطقی/5 ولت) قرار گرفته و سپس با استفاده از تابع
-«delay»
+«<var class="v-func">delay</var>»
 به اندازه 1000 میلی ثانیه (1 ثانیه) صبر شده (یعنی
-LED
+<span class="en">LED</span>
 روی برد توسعه روشن شده و برای ۱ ثانیه همچنان روشن نگه داشته شده)، سپس دوباره با
 استفاده از تابع
-«digitalWrite»،
+«<var class="v-func">digitalWrite</var>»،
 پین
-«LED_BUILTIN»
+«<var class="v-const">LED_BUILTIN</var>»
 این بار در حالت
-«LOW»
+«<var class="v-const">LOW</var>»
 («صفر» منطقی/0 ولت) قرار گرفته و سپس با استفاده از تابع
-«delay»
+«<var class="v-func">delay</var>»
 به اندازه 1000 میلی ثانیه (1 ثانیه) صبر شده است (یعنی
-LED
+<span class="en">LED</span>
 روی برد توسعه خاموش شده و برای 1 ثانیه همچنان خاموش نگه داشته شده). به این
 ترتیب، با هر بار تکرار این حلقه، LED روی برد توسعه 1 ثانیه روشن و 1 ثانیه خاموش
 می‌شود و به این شکل، یک مدار چشمک‌زن ایجاد می‌شود.
@@ -231,15 +221,26 @@ LED
 <p>
 شبیه‌سازی این آزمایش پیچیدگی و نکته خاصی ندارد، صرفا باید در نظر داشته باشید که
 همانگونه که در بخش «نرم‌افزار
-Proteus»
+<span class="en">Proteus</span>»
 پیوست 3 هم ذکر شد، به علت یک باگ برنامه‌نویسی در این نرم‌افزار، LED درون قطعه
 مرکب آردوینو با وجود سرخ شدن رنگ مربع دیجیتال سر شاخه مربوطه، چشمک نمی‌زند و
 برای دیدن چشمک‌زدن LED، باید حتما یک مدار جداگانه LED به‌همراه مقاومت
 محدودکننده جریان را به‌صورت دستی به پایه 13 قطعه مرکب آردوینو وصل کنید، مانند
 تصویرهای زیر:
 </p>
-<img src="img/00-blink-sim-on.png" alt="Proteus simulation screenshot with the built-in LED On">
+<figure>
 <img src="img/00-blink-sim-off.png" alt="Proteus simulation screenshot with the built-in LED Off">
+<img src="img/00-blink-sim-on.png" alt="Proteus simulation screenshot with the built-in LED On">
+<figcaption>
+شکل 1- شبیه‌سازی مدار آزمایش با «نرم‌افزار
+<span class="en">Proteus</span>» -
+با
+<span class="en">LED</span>
+داخلی خاموش (راست) و با
+<span class="en">LED</span>
+داخلی روشن (چپ)
+</figcaption>
+</figure>
 <h4>
 توضیح سیم‌بندی و بستن مدار آزمایش
 </h4>
@@ -255,70 +256,68 @@ Proteus»
 </p>
 همچنین می‌توانید تابلوی آردوینوی مورد نظر را به برق وصل کرده و روشن کنید، سپس
 یک سیم بردارید و یک سر آن را زیر ترمینال «زمین
-(GND)
+(<span class="en">GND</span>)
 » منبع تغذیه پیچ کرده و سر دیگر آن را به یکی از سه پین هدر مادگی «زمین
-(GND)
+(<span class="en">GND</span>)
 » روی برد آردوینو (هم در آدروینو اونو و هم در آردوینو مگا، یک پین هدر مادگی
 «زمین
-(GND)»
+(<span class="en">GND</span>)»
 در انتهای بخش «دیجیتال
-(Digital)»
+(<span class="en">Digital</span>)»
 و دو پین هدر مادگی «زمین
-(GND)»
+(<span class="en">GND</span>)»
 در بخش «قدرت
-(Power)
+(<span class="en">Power</span>)
 » دارند) وصل کنید (البته توصیه می‌شود که در صورت امکان، هر سه پین هدر مادگی را
 به «زمین
-(GND)
+(<span class="en">GND</span>)
 » منبع تغذیه وصل کنید). یک سیم دیگر هم بردارید و یک سر آن را زیر ترمینال «۵ ولت
-(5 V)
+(<span class="en">5 V</span>)
 » منبع تغذیه پیچ کرده و سر دیگر آن را به پین هدر مادگی «۵ ولت
-(5V)»
+(<span class="en">5V</span>)»
 در بخش «قدرت
-(Power)
+(<span class="en">Power</span>)
 » روی برد آردوینو وصل کنید. در این صورت هم، برد توسعه دوباره تغذیه شده و کد
 آزمایش را اجرا می‌کند.
 
 </p>
-<h3 class="fa-IR-explanation-header">اقلام مورد نیاز</h3>
+<h3 class="fa-heading">اقلام مورد نیاز</h3>
 <ul>
   
     <li>یک دستگاه رایانه</li>
   
-    <li>تابلوی آردوینو اونو (برای برد توسعه آردوینو اونو) یا تابلوی آردوینو مگا (برای برد توسعه آردوینو مگا)</li>
+    <li><a href="../h/p/01-arduino-uno.html">تابلوی آردوینو اونو</a> (برای <a href="../h/m/01-arduino-uno.html">برد توسعه آردوینو اونو</a>) یا <a href="../h/p/02-arduino-mega.html">تابلوی آردوینو مگا</a> (برای <a href="../h/m/02-arduino-mega.html">برد توسعه آردوینو مگا</a>)
+</li>
   
-    <li>کابل تبدیل <span class="english-text">USB Type-B</span> (پورت <span class="english-text">USB</span> روی بردهای توسعه آردوینو) به <span class="english-text">USB Type-A</span> (پورت <span class="english-text">USB</span> مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
+    <li>کابل تبدیل <span class="en">USB Type-B</span> (پورت <span class="en">USB</span> روی بردهای توسعه آردوینو) به <span class="en">USB Type-A</span> (پورت <span class="en">USB</span> مرسوم در رایانه‌ها) برای بارگذاری برنامه روی بردهای توسعه آردوینو
 </li>
   
 </ul>
-<h3 class="fa-IR-explanation-header">مراحل آزمایش</h3>
+<h3 class="fa-heading">مراحل آزمایش</h3>
 <p>
 مراحل این آزمایش در ادامه آمده‌اند.
 </p>
-<h4 class="fa-IR-explanation-header">شبیه‌سازی مدار در نرم‌افزار <span class="english-text">Proteus</span> (اختیاری)</h4>
+<h4 class="fa-heading">شبیه‌سازی مدار در نرم‌افزار <span class="en">Proteus</span> (اختیاری)</h4>
 <p>
 برای شبیه‌سازی مدار در نرم‌افزار
-<span class="english-text">Proteus</span>،
+<span class="en">Proteus</span>،
 بر پایه مطالب گفته‌شده در بخش «نرم‌افزار
-<span class="english-text">Proteus</span>»
+<span class="en">Proteus</span>»
 پیوست ۳ عمل کنید.
 </p>
-<h4 class="fa-IR-explanation-header">پیاده‌سازی عملی مدار</h4>
+<h4 class="fa-heading">پیاده‌سازی عملی مدار</h4>
 <p>
 پیاده‌سازی عملی مدار خود دربردارنده دو زیربخش است که در ادامه توضیح داده می‌شوند.
 </p>
-<h5 class="fa-IR-explanation-header">ترجمه و بارگذاری کد آزمایش بر روی برد توسعه آردوینو</h5>
+<h5 class="fa-heading">ترجمه و بارگذاری کد آزمایش بر روی برد توسعه آردوینو</h5>
 <p>
 برای ترجمه و بارگذاری کد آزمایش، مانند آزمایش ۰ عمل کنید.
 </p>
-<h5 class="fa-IR-explanation-header">بستن مدار</h5>
+<h5 class="fa-heading">بستن مدار</h5>
 <p>
 برای بستن مدار، بر پایه مطالب گفته‌شده در زیربخش «توضیح سیم‌بندی و بستن مدار آزمایش» در بخش «پیش‌نیازها» عمل کنید.
 </p>
-<p>
-
-</p>
-
 </div>
+</article>
 </body>
 </html>
