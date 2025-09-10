@@ -8,6 +8,13 @@ manufacturing_date: 2025
 category: تابلو
 manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
 manufacturer_country: ایران
+experiments:
+  - >
+    <a href="../../x/05-smart-thermostat.html">آزمایش 05: پیاده‌سازی ترموستات هوشمند</a>
+  - >
+    <a href="../../x/06-smart-home.html">آزمایش 06: اجرای نمونه ساده از خانه هوشمند</a>
+  - >
+    <a href="../../x/10-smart-home-emergency-sms.html">آزمایش 10: سامانه امنیتی با قابلیت ارسال پیامک‌های اضطراری</a>
 ---
 <p>
 تابلو 03 «حسگرهای یکم» دربردارنده موارد زیر است:

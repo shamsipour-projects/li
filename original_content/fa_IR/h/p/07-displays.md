@@ -8,6 +8,17 @@ manufacturing_date: 2025
 category: تابلو
 manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>
 manufacturer_country: ایران
+experiments:
+  - >
+    <a href="../../x/01-traffic-light.html">آزمایش 01: پیاده‌سازی چراغ راهنمایی با قابلیت چشمک‌زن</a>
+  - >
+    <a href="../../x/05-smart-thermostat.html">آزمایش 05: پیاده‌سازی ترموستات هوشمند</a>
+  - >
+    <a href="../../x/06-smart-home.html">آزمایش 06: اجرای نمونه ساده از خانه هوشمند</a>
+  - >
+    <a href="../../x/07-toy-car-with-collision-prevention.html">آزمایش 07: پیاده‌سازی نمونه ساده خودروی هوشمند با سامانه پیشگیری از تصادف</a>
+  - >
+    <a href="../../x/10-smart-home-emergency-sms.html">آزمایش 10: سامانه امنیتی با قابلیت ارسال پیامک‌های اضطراری</a>
 ---
 <p>
 تابلو 07 «نمایشگرها» دربردارنده موارد زیر است:

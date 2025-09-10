@@ -40,8 +40,13 @@
   </tr>
 </table>
 <div class="main-text">
-<h2 class="main-text-heading">توضیحات</h2>
 {{_content}}
+<h3>آزمایش‌هایی که این تابلو در آنها به کار رفته است</h3>
+<ul>
+  {% for experiment in experiments %}
+    <li>{{experiment}}</li>
+  {% endfor %}
+</ul>
 </div>
 </article>
 </body>
