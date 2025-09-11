@@ -189,8 +189,7 @@ def data_writer(sec: SecSpec, dst: str, template: Template, data: Dict,
         generic_data_writer(dst, template, data)
 
 
-def content_generator(sec: SecSpec, data_container: Dict,
-                      exceptions: Iterable[str] = CE,
+def content_generator(sec: SecSpec, exceptions: Iterable[str] = CE,
                       verbose: bool = False, _nuke_warning: bool = True):
     vp = _vpg(verbose, "[content_generator]")
     if sec.src_path is None or not osp.isdir(sec.src_path):
@@ -235,7 +234,6 @@ def content_generator(sec: SecSpec, data_container: Dict,
                     # Preparing directory structure if sec.dst_path is nuked
                     os.makedirs(osp.dirname(dst_f_path), exist_ok=True)
                     data = data_extractor(sec, src_f_path, verbose=verbose)
-                    data_container[dst_f_path] = data
                     data_writer(sec, dst_f_path, template, data, verbose=verbose)
                     # If copy and overwrite are both True, the following code
                     # would overwrite the converted file; so we have to jump
@@ -612,7 +610,7 @@ def generator(sec: SecSpec, content_exceptions: Iterable[str] = CE,
         if sec.custom_data_extractor is None:
             vp("'sec.data_extractor' is None, 'content_generator' will only"
                "copy data according to 'sec.rules' ({})".format(sec.rules))
-        content_generator(sec, sec_data_container, exceptions=content_exceptions, verbose=verbose, _nuke_warning=False)
+        content_generator(sec, exceptions=content_exceptions, verbose=verbose, _nuke_warning=False)
 
         if index and sec.generate_index:
             # vp("'sec.data_extractor' is provided; generating content")  # TODO

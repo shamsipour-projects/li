@@ -13,11 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
-from typing import Any, Union, Collection
-import os.path as osp
-
-from attrs import asdict
-from jinja2 import Template
+from typing import Union, Collection
 
 import blogger as b
 import global_values as gv
@@ -61,7 +57,6 @@ h_m = b.SecSpec(
     dst_path="docs/fa_IR/h/m",
     url_prefix=H_M_PREFIX,
     src_path="original_content/fa_IR/h/m",
-    data_spec=h.PanelData,
     dst_template_path="templates/fa_IR/h/m/m_template.html",
     src_template_path="templates/fa_IR/h/m/m_template.md",
     rules=b.Rules(
@@ -100,7 +95,7 @@ h_sec = b.SecSpec(
 x_sec = b.SecSpec(
     name="fa_ir_x",
     dst_path="docs/fa_IR/x",
-    url_prefix=H_PREFIX,
+    url_prefix=X_PREFIX,
     src_path="original_content/fa_IR/x",
     dst_template_path="templates/fa_IR/x/x_template.html",
     src_template_path="templates/fa_IR/x/x_template.md",
@@ -141,7 +136,7 @@ l_sec = b.SecSpec(
 root = b.SecSpec(
     name="fa_ir",
     dst_path="docs/fa_IR",
-    url_prefix=c.FA_IR_PREFIX,
+    url_prefix=FA_IR_PREFIX,
     src_path="original_content/fa_IR",
     sub_secs=[h_sec, x_sec, l_sec],
     generate_index=False,
