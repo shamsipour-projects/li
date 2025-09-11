@@ -51,10 +51,6 @@ qr_table_type = List[qr_row_type]
 qr_pages_type = List[qr_table_type]  # List[List[List[str | Tuple[str, str]]]]
 
 
-# The container for data look-back in index and QR code generators
-global_data_container = dict()
-
-
 # Recursion MUST be optional; in the root Sec all you want is to convert the
 # home page and move the favicon and NOT RECURSING TO THE SUBSECS
 @frozen
@@ -612,8 +608,6 @@ def generator(sec: SecSpec, content_exceptions: Iterable[str] = CE,
     vp("Beginning with section {} ({})".format(sec.name, sec.url_prefix))
     if sec.rules.nuke_dst_path:
         nuke_handler(sec)
-    global_data_container[sec.name] = dict()
-    sec_data_container = global_data_container[sec.name]
     if sec.src_path is not None and sec.dst_path is not None:
         if sec.custom_data_extractor is None:
             vp("'sec.data_extractor' is None, 'content_generator' will only"
