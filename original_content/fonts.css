@@ -1,0 +1,19 @@
+@font-face {
+    font-family: OpenMojiColor;
+    src:
+        url('fonts/OpenMoji-color-glyf_colr_0.woff2') format('woff2'),  /* Almost all modern browsers */
+        url('fonts/OpenMoji-color-glyf_colr_0.woff') format('woff'),
+        url('fonts/OpenMoji-color-glyf_colr_1.woff2') format('woff2'),  /* Most modern browsers (not Safari) */
+        url('fonts/OpenMoji-color-glyf_colr_1.woff') format('woff'),
+        url('fonts/OpenMoji-color-picosvgz.woff2') format('woff2'),  /* Firefox and Safari (Chromium does not support it yet) */
+        url('fonts/OpenMoji-color-picosvgz.woff') format('woff'),
+    ;
+    font-weight: 400 /* Default for normal text */
+}
+
+@font-face {
+    font-family: OpenMojiBlack;
+    src: url('fonts/OpenMoji-black-glyf.woff2') format('woff2'),
+         url('fonts/OpenMoji-black-glyf.woff') format('woff');
+    font-weight: 400;
+}

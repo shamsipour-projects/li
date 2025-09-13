@@ -18,12 +18,30 @@ import global_values as gv
 import fa_ir
 
 
+root_fonts = b.SecSpec(
+    name="root_fonts",
+    dst_path="docs/fonts",
+    url_prefix=gv.PREFIX + "fonts/",
+    src_path="original_content/fonts",
+    generate_index=False,
+    generate_qr=False,
+    generate_qrpages=False,
+    rules=b.Rules(
+        # nuke_dst_path=True,  # It did pass the test and we don't need it anymore
+        recursive_convert=False,
+        copy_selected_data=True,
+        recursive_copy=False,
+        overwrite_when_copying=True,
+    )
+)
+
+
 document_root = b.SecSpec(
     name="root",
     dst_path="docs",
     url_prefix=gv.PREFIX,
     src_path="original_content",
-    sub_secs=[fa_ir.root],
+    sub_secs=[root_fonts, fa_ir.root],
     generate_index=False,
     generate_qr=False,
     generate_qrpages=False,

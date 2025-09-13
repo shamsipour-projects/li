@@ -296,8 +296,16 @@ def index_extractor(sec: SecSpec, dst: str, verbose: bool = False) -> Dict:
 
 def generic_index_writer(sec: SecSpec, template: Template,
                          index_rows: Collection[Dict]):
+    # Sort 'index_rows' before passing it to the template to have sorted index
+    index_rows = sorted(index_rows, key=lambda x: x.get("title", ""))
     with open(osp.join(sec.dst_path, sec.index_filename), mode="w") as f:
-        f.write(template.render(title=sec.index_title, index=index_rows))
+        f.write(
+            template.render(
+                title=sec.index_title,
+                index=index_rows,
+                enumerate=enumerate
+            )
+        )
 
 
 def index_writer(sec: SecSpec, template: Template, index_rows: Collection[Dict],

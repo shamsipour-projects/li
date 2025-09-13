@@ -6,7 +6,7 @@
 }
 
 @font-face {
-    font-family: BNazanin;
+    font-family: BNazaninBold;
     src: url('fonts/BNazanin\ Bold.woff2') format('woff2'),
          url('fonts/BNazanin\ Bold.woff') format('woff');
     font-weight: 700;

@@ -10,8 +10,13 @@ body {
     font-display: swap;
 }
 
-.fa-heading {
+.fa-main-heading {
     font-family: BTitr;
+    font-display: swap;
+}
+
+.fa-heading {
+    font-family: BNazaninBold;
     font-display: swap;
 }
 
@@ -22,35 +27,53 @@ body {
     font-display: swap;
 }
 
+nav {
+    font-size: 2.1vmax;
+    font-family: BNazanin;
+    font-display: swap;
+}
+
+.nav-icon {
+    font-family: OpenMojiColor, OpenMojiBlack;
+    font-display: swap;
+}
+
+/* Every 0.2vmax increase results in about 2.4px increase in font-size */
+
 .main-heading {
     text-align: center;
     min-height: 4vh;
-    font-size: 8.5vmax;
-    /* font-size: 3.5vmax; */  /* a magic number for heading */
+    font-size: 4.5vmax;  /* a magic number for the main heading */
+    /* font-size: 3.1vmax; */
+    margin-block: 3vmax;  /* The main heading need more margin to look better */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-block: 2.3vmax;  /* We apply margins meant for paragraph spacing to the paragraphs themselves */
 }
 
 h1 {
-    font-size: 7.5vmax;
+    font-size: 2.9vmax;
 }
 
 h2 {
-    font-size: 6.5vmax;
+    font-size: 2.7vmax;
 }
 
 h3 {
-    font-size: 5.5vmax;
+    font-size: 2.5vmax;
 }
 
 h4 {
-    font-size: 4.5vmax;
+    font-size: 2.3vmax;
 }
 
 h5 {
-    font-size: 3.5vmax;
+    font-size: 2.1vmax;
 }
 
 h6 {
-    font-size: 2.5vmax;
+    font-size: 1.9vmax;
 }
 
 .main-img {
