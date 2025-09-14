@@ -1,6 +1,6 @@
 ---
-title: "Panel 06: Sensors IV"
-header: "Panel 06: Sensors IV"
+title: "تابلو 06: حسگرهای چهارم"
+header: "تابلو 06: حسگرهای چهارم"
 author: M. MAD
 pic: img/06-sensors-IV.png
 name: "تابلو 06: حسگرهای چهارم"

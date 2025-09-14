@@ -1,6 +1,6 @@
 ---
-title: "Panel 03: Sensors I"
-header: "Panel 03: Sensors I"
+title: "تابلو 03: حسگرهای یکم"
+header: "تابلو 03: حسگرهای یکم"
 author: M. MAD
 pic: img/03-sensors-I.png
 name: "تابلو 03: حسگرهای یکم"

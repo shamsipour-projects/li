@@ -1,6 +1,6 @@
 ---
-title: "Panel 01: Arduino Uno"
-header: "Panel 01: Arduino Uno"
+title: "تابلو 01: آردوینو اونو"
+header: "تابلو 01: آردوینو اونو"
 author: M. MAD
 pic: img/01-arduino-uno.png
 name: "تابلو 01: آردوینو اونو"

@@ -1,6 +1,6 @@
 ---
-title: "Panel 02: Arduino Mega"
-header: "Panel 02: Arduino Mega"
+title: "تابلو 02: آردوینو مگا"
+header: "تابلو 02: آردوینو مگا"
 author: M. MAD
 pic: img/02-arduino-mega.png
 name: "تابلو 02: آردوینو مگا"

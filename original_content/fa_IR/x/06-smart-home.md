@@ -1,6 +1,6 @@
 ---
-title: "Experiment 06: Smart home"
-header: "Experiment 06: Smart home"
+title: "آزمایش 06: اجرای نمونه ساده از خانه هوشمند"
+header: "آزمایش 06: اجرای نمونه ساده از خانه هوشمند"
 author: M. MAD
 pic: img/06-smart-home.png
 name: "آزمایش 06: اجرای نمونه ساده از خانه هوشمند"

@@ -1,6 +1,6 @@
 ---
-title: "Panel 05: Sensors III"
-header: "Panel 05: Sensors III"
+title: "تابلو 05: حسگرهای سوم"
+header: "تابلو 05: حسگرهای سوم"
 author: M. MAD
 pic: img/05-sensors-III.png
 name: "تابلو 05: حسگرهای سوم"

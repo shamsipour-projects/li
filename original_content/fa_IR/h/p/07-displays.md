@@ -1,6 +1,6 @@
 ---
-title: "Panel 07: Displays"
-header: "Panel 07: Displays"
+title: "تابلو 07: نمایشگرها"
+header: "تابلو 07: نمایشگرها"
 author: M. MAD
 pic: img/07-displays.png
 name: "تابلو 07: نمایشگرها"

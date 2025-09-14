@@ -1,6 +1,6 @@
 ---
-title: "Experiment 01: Traffic light"
-header: "Experiment 01: Traffic light"
+title: "آزمایش 01: پیاده‌سازی چراغ راهنمایی با قابلیت چشمک‌زن"
+header: "آزمایش 01: پیاده‌سازی چراغ راهنمایی با قابلیت چشمک‌زن"
 author: M. MAD
 pic: img/01-traffic-light.png
 name: "آزمایش 01: پیاده‌سازی چراغ راهنمایی با قابلیت چشمک‌زن"

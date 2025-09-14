@@ -1,6 +1,6 @@
 ---
-title: "Experiment 05: Smart thermostat"
-header: "Experiment 05: Smart thermostat"
+title: "آزمایش 05: پیاده‌سازی ترموستات هوشمند"
+header: "آزمایش 05: پیاده‌سازی ترموستات هوشمند"
 author: M. MAD
 pic: img/05-smart-thermostat.png
 name: "آزمایش 05: پیاده‌سازی ترموستات هوشمند"

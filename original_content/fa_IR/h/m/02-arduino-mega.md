@@ -1,6 +1,6 @@
 ---
-title: "Module 02: Arduino Mega"
-header: "Module 02: Arduino Mega"
+title: "ماژول 02: آردوینو مگا"
+header: "ماژول 02: آردوینو مگا"
 author: M. MAD
 pic: img/02-arduino-mega.png
 name: "ماژول 02: آردوینو مگا"

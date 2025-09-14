@@ -1,6 +1,6 @@
 ---
-title: "Experiment 04: Toy car with respect to traffic light"
-header: "Experiment 04: Toy car with respect to traffic light"
+title: "آزمایش 04: پیاده‌سازی خودروی اسباب‌بازی با احترام به چراغ راهنمایی"
+header: "آزمایش 04: پیاده‌سازی خودروی اسباب‌بازی با احترام به چراغ راهنمایی"
 author: M. MAD
 pic: img/04-toy-car-with-respect-to-traffic-light.png
 name: "آزمایش 04: پیاده‌سازی خودروی اسباب‌بازی با احترام به چراغ راهنمایی"

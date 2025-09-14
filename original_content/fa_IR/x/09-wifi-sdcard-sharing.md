@@ -1,9 +1,9 @@
 ---
-title: "Experiment 09: WiFi SD Card sharing"
-header: "Experiment 09: WiFi SD Card sharing"
+title: "آزمایش 09: اشتراک‌گذاری پرونده‌ها از طریق WiFi Hot Spot"
+header: "آزمایش 09: اشتراک‌گذاری پرونده‌ها از طریق WiFi Hot Spot"
 author: M. MAD
 pic: img/09-wifi-sdcard-sharing.png
-name: "آزمایش 07: اشتراک‌گذاری پرونده‌ها از طریق WiFi Hot Spot"
+name: "آزمایش 09: اشتراک‌گذاری پرونده‌ها از طریق WiFi Hot Spot"
 manufacturing_date: 2025
 category: آزمایش
 manufacturer_name: اپتیک‌نیرو - <span class="en">Optic Niroo</span>

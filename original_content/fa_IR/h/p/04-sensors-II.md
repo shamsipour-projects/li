@@ -1,6 +1,6 @@
 ---
-title: "Panel 04: Sensors II"
-header: "Panel 04: Sensors II"
+title: "تابلو 04: حسگرهای دوم"
+header: "تابلو 04: حسگرهای دوم"
 author: M. MAD
 pic: img/04-sensors-II.png
 name: "تابلو 04: حسگرهای دوم"

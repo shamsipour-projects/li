@@ -1,6 +1,6 @@
 ---
-title: "Experiment 07: Toy car with collision prevention"
-header: "Experiment 07: Toy car with collision prevention"
+title: "آزمایش 07: پیاده‌سازی نمونه ساده خودروی هوشمند با سامانه پیشگیری از تصادف"
+header: "آزمایش 07: پیاده‌سازی نمونه ساده خودروی هوشمند با سامانه پیشگیری از تصادف"
 author: M. MAD
 pic: img/07-toy-car-with-collision-prevention.png
 name: "آزمایش 07: پیاده‌سازی نمونه ساده خودروی هوشمند با سامانه پیشگیری از تصادف"

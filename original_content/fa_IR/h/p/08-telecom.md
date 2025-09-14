@@ -1,6 +1,6 @@
 ---
-title: "Panel 08: Telecom"
-header: "Panel 08: Telecom"
+title: "تابلو 08: مخابراتی"
+header: "تابلو 08: مخابراتی"
 author: M. MAD
 pic: img/08-telecom.png
 name: "تابلو 08: مخابراتی"

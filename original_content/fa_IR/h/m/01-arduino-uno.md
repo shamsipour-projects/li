@@ -1,6 +1,6 @@
 ---
-title: "Module 01: Arduino Uno"
-header: "Module 01: Arduino Uno"
+title: "ماژول 01: آردوینو اونو"
+header: "ماژول 01: آردوینو اونو"
 author: M. MAD
 pic: img/01-arduino-uno.png
 name: "ماژول 01: آردوینو اونو"

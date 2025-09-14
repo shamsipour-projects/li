@@ -1,6 +1,6 @@
 ---
-title: "Experiment 02: Shutters control"
-header: "Experiment 02: Shutters control"
+title: "آزمایش 02: پیاده‌سازی کرکره برقی"
+header: "آزمایش 02: پیاده‌سازی کرکره برقی"
 author: M. MAD
 pic: img/02-shutters-control.png
 name: "آزمایش 02: پیاده‌سازی کرکره برقی"

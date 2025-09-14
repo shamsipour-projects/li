@@ -1,6 +1,6 @@
 ---
-title: "Experiment 10: Smart home with emergency SMS"
-header: "Experiment 10: Smart home with emergency SMS"
+title: "آزمایش 10: سامانه امنیتی با قابلیت ارسال پیامک‌های اضطراری"
+header: "آزمایش 10: سامانه امنیتی با قابلیت ارسال پیامک‌های اضطراری"
 author: M. MAD
 pic: img/10-smart-home-emergency-sms.png
 name: "آزمایش 10: سامانه امنیتی با قابلیت ارسال پیامک‌های اضطراری"

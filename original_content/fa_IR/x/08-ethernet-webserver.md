@@ -1,6 +1,6 @@
 ---
-title: "Experiment 08: Ethernet webserver"
-header: "Experiment 08: Ethernet webserver"
+title: "آزمایش 08: کارساز وب با اتصال از طریق اترنت"
+header: "آزمایش 08: کارساز وب با اتصال از طریق اترنت"
 author: M. MAD
 pic: img/08-ethernet-webserver.png
 name: "آزمایش 08: کارساز وب با اتصال از طریق اترنت"

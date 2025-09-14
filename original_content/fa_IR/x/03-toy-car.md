@@ -1,6 +1,6 @@
 ---
-title: "Experiment 03: Toy car"
-header: "Experiment 03: Toy car"
+title: "آزمایش 03: پیاده‌سازی خودروی اسباب‌بازی ساده"
+header: "آزمایش 03: پیاده‌سازی خودروی اسباب‌بازی ساده"
 author: M. MAD
 pic: img/03-toy-car.png
 name: "آزمایش 03: پیاده‌سازی خودروی اسباب‌بازی ساده"
